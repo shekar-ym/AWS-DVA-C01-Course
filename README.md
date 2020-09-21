@@ -24,15 +24,48 @@ If there is anything wrong, please point them out.
   3. ECS agents registers EC2 to a ECS cluster
   4. EC2 instances run a special AMI (Amazon ECS-Optimized Amazon Linux AMI) made for ECS
     
-    Demo
-    ECS instance linked to one EC2 instance
-    1 vCPU = available CPUs
+    Demo notes
+    > ECS instance linked to one EC2 instance
+    > 1 vCPU = available CPUs
     
-    ECS Cluster also creates a ASG
-    User data in ASG launch configuration contains the ecs.config file which has details about which ECS cluster the EC2 gets registered to.
+    > ECS Cluster also creates a ASG
+    > User data in ASG launch configuration contains the ecs.config file which has details 
+    about which ECS cluster the EC2 gets registered to.
     
+   ECS Task Definitions
+   1. JSON form - defines "how" ECS runs a Docker container
+   2. Contains
+        Image Name
+        Port Binding between Container and Host
+        Memory and CPU
+        Env variables
+        Networking information
+   3. Container port and Host port can be different
+   4. ECS Task Role - IAM role which allows ECS task to perform API calls to other AWS services.
+      If task cannot pull an image from ECR or cannot access S3 - check the Task Role.
+   5. ECS Task Execution Role - This is required by tasks to pull container images and publish container logs to CW on your behalf.
+   6. Task Memory and CPU - reserver from ECS Memory and CPU.
+   7. Container Definition - Docker image,Image tag,Port mapping (between Host port and Container tag)
    
-
+   ECS Service
+   1. Creaetd at container leve. Defines how many tasks should run and how
+   2. Ensures desired number of tasks are running across fleet of EC2 instances.
+   3. Can be linked to ELB/NLB/ALB.
+   
+    Demo notes
+    > Service Type:
+      REPLICA - run as many tasks you need across EC2 instances
+      DAEMON - Run one task per EC2 instance
+    > Deployment Type:
+      Rolling update
+      Blue Green (powered by Code Deploy)
+     > Task Placement
+  
+  ECS Service with Load Balancers
+  1. ALB support dynamic port forwarding between container and host - instead of specifying port mappings at each task level.
+  2. ALB's dynamic port forwarding - is helps to run multiple same tasks on same EC2 instance.
+  
+        
 
 
 # AWS Serverless: Lambda
