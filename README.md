@@ -14,15 +14,15 @@ If there is anything wrong, please point them out.
   6. Docker images can be stored in Docker Hub or ECR (push or pull)
     
   Docker Containers Managaement
-    1. ECS
-    2. Fargate: Amazon's Serverless platform
-    3. EKS Amazon's managed K8s (open source)
+  1. ECS
+  2. Fargate: Amazon's Serverless platform
+  3. EKS Amazon's managed K8s (open source)
   
   ECS Clusters
-    1. Are logical grouping of EC2 instances
-    2. EC2 run ECS agents
-    3. ECS agents registers EC2 to a ECS cluster
-    4. EC2 instances run a special AMI (Amazon ECS-Optimized Amazon Linux AMI) made for ECS
+  1. Are logical grouping of EC2 instances
+  2. EC2 run ECS agents
+  3. ECS agents registers EC2 to a ECS cluster
+  4. EC2 instances run a special AMI (Amazon ECS-Optimized Amazon Linux AMI) made for ECS
     
     Demo
     ECS instance linked to one EC2 instance
