@@ -4,14 +4,14 @@ If there is anything wrong, please point them out.
 # ECS, EKS, Fargate - Docker in AWS
 
   Docker
-    1.Software development platform to deploy apps
-    2.Apps are packaged as containers that can run on any OS (Docker daemon)
-    3.Docker images are stored in Docker registry
-      Public repo : Docker Hub
-      Private repo: Amazon ECR
-    4.Many containers running on same host ==> shares the host resources.
-    5. Dockerfile ==> build ==> Docker image ==> Docker container
-    6. Docker images can be stored in Docker Hub or ECR (push or pull)
+  1.Software development platform to deploy apps
+  2.Apps are packaged as containers that can run on any OS (Docker daemon)
+  3.Docker images are stored in Docker registry
+    Public repo : Docker Hub
+    Private repo: Amazon ECR
+  4.Many containers running on same host ==> shares the host resources.
+  5. Dockerfile ==> build ==> Docker image ==> Docker container
+  6. Docker images can be stored in Docker Hub or ECR (push or pull)
     
   Docker Containers Managaement
     1.ECS
