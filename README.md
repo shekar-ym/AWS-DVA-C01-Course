@@ -90,12 +90,19 @@ If there is anything wrong, please point them out.
   1. EC2 Instance profile is attached to EC2 instance which is part of container instance.
   2. EC2 instance profile is used by ECS agent to make API calls to ECS Service (for registering EC2 to ECS).
   3. Also to send logs to CloudWatch logs and pull images from ECR.
-  
   4. ECS Task runs on EC2 instance and needs ECS Task role.
   5. Each task will have specific role for its purpose.
   6. Task role defined at Task definition role.
   
   ECS Task Placement
+  1. Helps to define task placement strategy and task placement contraints.
+  2. ECS Service must determine where to place tasks based on CPU, memory and available port. Also to determine which task to remove during scaling.
+  3. For Fargate, AWS takes care of this.
+  4. Process to select container instances for task placement
+    4.1 Instances that satisfy CPU, memory and port requirements
+    4.2 Instances that satisfy task placement contraints 
+    4.3 Instances that satisfy task placement strategies
+    4.4 Select the instance.
   
   
   
