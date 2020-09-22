@@ -48,7 +48,7 @@ If there is anything wrong, please point them out.
    7. Container Definition - Docker image,Image tag,Port mapping (between Host port and Container tag)
    
    ECS Service
-   1. Creaetd at container leve. Defines how many tasks should run and how
+   1. Creaetd at container level. Defines how many tasks should run and how in a cluster.
    2. Ensures desired number of tasks are running across fleet of EC2 instances.
    3. Can be linked to ELB/NLB/ALB.
    
@@ -59,15 +59,46 @@ If there is anything wrong, please point them out.
     > Deployment Type:
       Rolling update
       Blue Green (powered by Code Deploy)
-     > Task Placement
+    > Task Placement
   
   ECS Service with Load Balancers
-  1. ALB support dynamic port forwarding between container and host - instead of specifying port mappings at each task level.
-  2. ALB's dynamic port forwarding - is helps to run multiple same tasks on same EC2 instance.
+  1. If you dont specify the host port(0) in port mapping, host port assigned will be random. So every task that is launched 
+     will have a different host port mapped.
+  2. But with this kind of random ports, it will be difficult to route the traffc. 
+  2. ALB support dynamic port forwarding between container and host - helps to route the traffic to random host port and balance the load.
+  3. ALB's dynamic port forwarding - is helps to run multiple same tasks on same EC2 instance.
+  4. In an ECS service, LB can only be set on service creation.
+  5. ALB - allws to use dynamic host port mapping (multiple tasks allowed per container instance). Rule based routing and paths supported.
+  6. Can't be achieved with Classic LB (requires static host port mappings (only one task allowed per container instance)). Rule based routing and paths not         supported.
+  7. SG of ECS Container service should edited to allow traffic (from all ports) from ALB SG.
+ 
+  ECR
+  1. Private Docker image repo
+  2. Access controlled through IAM. Permission errors ===> Check IAM policy.
+  3. AWS CLI v1 login command (may be asked at the exam)
+      $(aws ecr get-login --no-include-email --region eu-west-1)
+  4. AWS CLI v2 login command (newer, may also be asked at the exam - pipe)
+      aws ecr get-login-password --region eu-west-1 | docker login --username AWS -- password-stdin 1234567890.dkr.ecr.eu-west-1.amazonaws.com
+
+  Fargate
+  1. Serverless. No EC2 involved.
+  2. Create task definitions and AWS will run containers for you.
+  3. To scale, just increase number of tasks. 
+  4. No need to configure port mapping. Fargate will take care of dynamic routing.
   
-        
-
-
+  ECS IAM Deep Dive
+  1. EC2 Instance profile is attached to EC2 instance which is part of container instance.
+  2. EC2 instance profile is used by ECS agent to make API calls to ECS Service (for registering EC2 to ECS).
+  3. Also to send logs to CloudWatch logs and pull images from ECR.
+  
+  4. ECS Task runs on EC2 instance and needs ECS Task role.
+  5. Each task will have specific role for its purpose.
+  6. Task role defined at Task definition role.
+  
+  ECS Task Placement
+  
+  
+  
 # AWS Serverless: Lambda
 # AWS Serverless: DynamoDB
 # AWS Serverless: API Gateway
