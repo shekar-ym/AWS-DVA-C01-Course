@@ -96,14 +96,47 @@ If there is anything wrong, please point them out.
   
   ECS Task Placement
   1. Helps to define task placement strategy and task placement contraints.
-  2. ECS Service must determine where to place tasks based on CPU, memory and available port. Also to determine which task to remove during scaling.
+  2. ECS Service must determine where to place tasks based on CPU, memory and available port. Also to determine which task to terminate during scaling.
   3. For Fargate, AWS takes care of this.
   4. Process to select container instances for task placement
-    4.1 Instances that satisfy CPU, memory and port requirements
-    4.2 Instances that satisfy task placement contraints 
-    4.3 Instances that satisfy task placement strategies
-    4.4 Select the instance.
+      Instances that satisfy CPU, memory and port requirements
+      Instances that satisfy task placement contraints 
+      Instances that satisfy task placement strategies
+      Select the instance.
+  5. Task placement Strategies - 
+  Binpack ==> based on amount of CPU/Memory available ==> Cost savings
+  Random ==> place the tasks randomly
+  Spread ===>  If the specified value is AZ, then tasks are placed evenly on EC2 instances across AZs
+  6. Task placement strategies can be mixed together.
+  7. Task placement constraints -
+  distinctInstance - places task on distinct container instances (One Task per Host)
+  memberOf - places task on instances that satisfies an expression (cluster query language)
   
+  ECS Autoscaling
+  1. Service Auto Scaling: CPU and RAM tracked in CloudWatch at ECS Service level
+  2. Target Scaling : scaling based on average CloudWatch metrics
+  3. Step scaling: Based on CloudWatch alarms
+  4. Scheduled scaling: based on predictable changes
+  5. ECS Service scaling is NOT equal to EC2 Auto scaling (instance level)
+  6. If you want to do ECS service scaling and EC2 Auto scaling at the same time - ECS Cluster Capacity Provider
+  
+  ECS Summary and Exam Tips
+  1. ECS - used to run Docker containers - ECS Classic, Fargate, EKS
+  2. ECS Classic - Must connfigure the file /etc/ecs/ecs.config with the cluster name
+  3. ECS Classic - EC2 instance must run ECS agent
+  4. ECS Classic - ALB for dynamic port mapping, EC2 instance SG must allow traffic from ALM SG on all ports
+  5. ECS tasks - can have IAM roles to execute actions against AWS
+  6. SG Operatae at instance level not task level
+  7. ECR - integrates with IAM, AWS CLI v1 login command, AWS CLI v2 login command, Docker push and pull
+  8. If EC2 instance cannot pull a Docker image, check IAM
+  9. Fargate AWS provisons containers for us and assigns them ENI
+  10.Fargate tasks can have IAM roles to execute actions against AWS
+  11. ECS integrates with CloudWatch logs, logging to be setup at task definition level
+  12. Each container will have a different log stream, EC2 instance profile needs to have correct IAM permissions
+  13. Use IAM Task Roles for your tasks
+  14. Task placement strategies: binpack, random, spread
+  15. Service Auto scaling: Target tracking, Step, Scheduled
+  16. Cluster Auto scaling through Capacity providers.
   
   
 # AWS Serverless: Lambda
