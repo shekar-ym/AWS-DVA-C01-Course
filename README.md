@@ -138,6 +138,9 @@ If there is anything wrong, please point them out.
   15. Service Auto scaling: Target tracking, Step, Scheduled
   16. Cluster Auto scaling through Capacity providers.
   
+  ECS Quiz
+  Which ECS Config must you enable in /etc/ecs/ecs.config to allow your ECS tasks to endorse IAM roles = ECS_ENABLE_TASK_IAM_ROLE
+  
   
 # AWS Serverless: Lambda
 # AWS Serverless: DynamoDB
