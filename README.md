@@ -5,6 +5,19 @@ If there is anything wrong, please point them out.
 # CloudFront
 
 
+
+
+  CloudFront Signed URL/Cookies
+  1. To distribute paid shared content.
+  2. Includes URL expiration, IP ranges from where the content can be accessed, Trusted signers
+  3. Shared content (movie, music) - short time, Private content (to an user): can be years
+  4. Signed URL - for individual files (one URL per file), Signed Cookies - for multiple files (one signed cookie for many files)
+  5. CloudFront signed URL - allow access to path, no matter the origin. can leverage caching feature
+  6. S3 signed URL -Issue a request as the person who pre-signed the URL, Uses IAM key of the signing IAM principal, Limited lifetime.
+  
+  Quiz:
+  CF Signed URL is used to distribute paid content through dynamic CF signed URL generation.
+
 # ECS, EKS, Fargate - Docker in AWS
 
   Docker
