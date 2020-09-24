@@ -2,6 +2,26 @@
 This repo contains my notes that i captured during my preparation for AWS Certified Developer Associate certification exam (DVA-C01). Notes are based on Udemy course from Stephane Maarek https://www.udemy.com/course/aws-certified-developer-associate-dva-c01/
 If there is anything wrong, please point them out.
 
+
+
+
+# Amazon S3 Introduction
+1. S3 Object Key = FULL path to the object. s://my_bucket/my_folder/another_folder/my_file.text
+2. Key = prefix + object name. Prefix = my_folder/another_folder, object name = my_file.text.
+3. Max Object size = 5 TB. If any object > 5 GB, use multi part upload
+4. Metadata, Tags, Version ID
+
+S3 Versioning
+1. Enabled at bucket level
+2. Any file that is not versioned prior to enabling versioning will have version = null.
+3. Suspending versioning does not delete previous versions
+
+S3 Encryption
+1. SSE-S3 ==> Must set header: "x-amz-server-side-encryption":"AES256"
+2. SSE-KMS ==> Must set header: "x-amz-server-side-encryption":"aws:kms", KMS Advantage: user control + audir trail.
+3. SSE-C ==> using data keys managed by customer outside AWS, HTTPS must be used.
+4. SSE-C ==> Encryption key must be provided in HTTPS header, for every HTTP request made.
+
 # CloudFront
 
 
