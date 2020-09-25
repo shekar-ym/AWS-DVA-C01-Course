@@ -20,6 +20,18 @@ VPC Security
 4. Troubleshoot issues - subnet to internet, subnet to subnet, internet to subnet
 5. Flows logs can be sent to S3 / Cloudwatch Logs 
 
+VPC Peering, End points, VPC, DX
+1. VPC Peering - connect VPCs privately using AWS network.
+2. VPC Peering - must not have overlapping CIDR, Not transitive. 
+3. VPC Endpoints - Allows to connect AWS services using private network instead of traversing through the internet.
+4. VPC Endpoint Gateway - S3 and DynamoDB
+5. VPC Endpoint Interface - Other services
+6. Site to Site VPN - used to connect onprem to AWS. Connection is encrypted, goes over the internet.
+7. Direct Connect - Physical connection between onprem and AWS. Connection is private, secure and fast. Goes over private network
+8. DX takes time to estabish.
+9. Site-to-Site VPN and DX cannot access VPC Endpoints
+
+
 
 # Amazon S3 Introduction
 1. S3 Object Key = FULL path to the object. s://my_bucket/my_folder/another_folder/my_file.text
