@@ -3,6 +3,22 @@ This repo contains my notes that i captured during my preparation for AWS Certif
 If there is anything wrong, please point them out.
 
 
+# VPC
+1. VPC is regional resource.
+2. Subnets are AZ level resource. Public subnet, Private subnet
+3. Route tabels - to define access to internet and between subnets.
+4. Internet Gateway - to provide internet connectitiy to instances in VPC
+5. Public Subnet will have a route to IGW
+6. NAT Gateway (managed), NAT instances - allow instances in private subnet to acces internet while remaining private.
+7. NAT Gateway / NAT instance is deployed in public subnet.
+8. Private subnet instances have route to NAT Gateway/ NAT instance.
+
+VPC Security
+1. NACL - Attached at subnet level. Has ALLOW and DENY rules. Rules only include IP addresses.
+2. SGs - firewall that constols to and from an ENI/ an EC2 instance. Rule include IP addresses and other SGs.
+3. Flow Logs - VPC Flow logs, Subnet Flow logs, ENI Flow Logs.
+4. Troubleshoot issues - subnet to internet, subnet to subnet, internet to subnet
+5. Flows logs can be sent to S3 / Cloudwatch Logs 
 
 
 # Amazon S3 Introduction
@@ -42,6 +58,13 @@ S3 CORS
 4. if a client does a cross-origin request on S3 bucket, we need to enable correct CORS header
 5. You can allow for specific origin or for * (all origins)
 
+S3 Consistency Model
+1. Read after write consistency for PUTS of new objects. PUT 200==> GET 200
+2. Except GET 404==>PUT 200 ==>GET 404 --> eventual consistency
+3. Eventual consistency consistency for DELETES and PUTS of existing objects.
+4. PUT 200 ==> PUT 200 ==> GET 200 (might be older version)
+5. DELETE 200 ==> GET 200
+6. NO WAY TO REQUEST "STRONG CONSISTENCY"
 
 # CloudFront
 
