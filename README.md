@@ -2,6 +2,32 @@
 This repo contains my notes that i captured during my preparation for AWS Certified Developer Associate certification exam (DVA-C01). Notes are based on Udemy course from Stephane Maarek https://www.udemy.com/course/aws-certified-developer-associate-dva-c01/
 If there is anything wrong, please point them out.
 
+# Route 53
+1. Managed DNS.
+2. A record - hostname to IPv4
+3. AAAA record - hostname to IPv6
+4. CNAME - hostname to hostname
+5. Alias - hostname to AWS resource
+6. Route 53 can use public domain or private domain names (that can be resolved by your instances in VPC)
+7. Route 53 TTL - decide based on requirement.
+
+CNAME vs Alias
+1. CNAME - hostname to hostname. ONLY FOR NON ROOT DOMAIN (example: something.mydomain.com NOT mydomain.com)
+2. Alias - hostname to AWS resource (app.mydomain.com to abcd.amazonaws.com). WORKS FOR BOTH ROOT AND NOT ROOT DOMAIN (mydomain.com
+3. Alias - Free, Native Health check
+
+Simple Routing
+1. Use when redirect to a single resource is needed.
+2. Cannot attach health checks
+3. If multiple values are returned, a random one is chosen by the client.
+
+Weighted Routing
+1. Control the % of requests that go to specific end point
+2. Health checks can be associated.
+
+Latency Routing Policy
+
+
 
 # VPC
 1. VPC is regional resource.
