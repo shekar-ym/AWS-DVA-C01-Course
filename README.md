@@ -18,9 +18,23 @@ S3 Versioning
 
 S3 Encryption
 1. SSE-S3 ==> Must set header: "x-amz-server-side-encryption":"AES256"
-2. SSE-KMS ==> Must set header: "x-amz-server-side-encryption":"aws:kms", KMS Advantage: user control + audir trail.
+2. SSE-KMS ==> Must set header: "x-amz-server-side-encryption":"aws:kms", KMS Advantage: user control + audit trail.
 3. SSE-C ==> using data keys managed by customer outside AWS, HTTPS must be used.
 4. SSE-C ==> Encryption key must be provided in HTTPS header, for every HTTP request made.
+5. Client Side Encryption: Amazon S3 Encryption client library can be used, data should be encrypted before sending it to S3.
+6. Client Side Encryption: Client responsible for decryption as well
+7. Encryption in transit (SSL/TLS) : S3 exposes both HTTP and HTTSPS Endpoint. Recommended HTTPS
+8. HTTPS is mandatory for SSE-C
+
+S3 Security and Bucket Policies
+1. IAM User Based
+2. Resource Based - Bucket policies, Object ACL, Bucket ACL 
+3. Bucket settings for Block Public Access (can be set at account level too)
+4. VPC Endpoints (for access from instances within VPC without internet)
+5. Logging and Audit: S3 Access Logs, CloudTrial 
+6. MFA Delete: for Versioned buckets to delete objects
+7. Pre-Signed URLs: Short lived. Premium content for logged in users
+
 
 # CloudFront
 
