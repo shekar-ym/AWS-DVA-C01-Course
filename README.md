@@ -26,7 +26,28 @@ Weighted Routing
 2. Health checks can be associated.
 
 Latency Routing Policy
+1. Redirect users to server that has the least latency close to user.
+2. Latency is evaluated in terms of user to designated AWS region.
 
+Route53 Healtchecks
+1. X health checks failed ==> unhealthy (default =3)
+2. X health checks passed ==> healthy (default =3) 
+3. Healthchecks can be integrated with CloudWatch.
+4. Can monitor status of other health checks (calculated health check)
+5. Can monitor state of CloudWatch alarm.
+
+Failover Routing
+1. Health check mandtory.
+2. Failover between Primary and Secondary
+
+Geo-Location Routing
+1. Different from latency based
+2. Routing based on User location
+
+Multivalue Routing
+1. Use when routing traffic to multiple resources
+2. Healthchecks association is needed.
+3. Upto 8 healthy records returned for each multi value query
 
 
 # VPC
