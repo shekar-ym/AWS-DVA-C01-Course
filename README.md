@@ -35,6 +35,13 @@ S3 Security and Bucket Policies
 6. MFA Delete: for Versioned buckets to delete objects
 7. Pre-Signed URLs: Short lived. Premium content for logged in users
 
+S3 CORS
+1. Origin = scheme (protocol) + host (domain) + port
+2. CORS = Cross Origin Resource sharing
+3. The requests wont be fulfilled unless the other origin allows for the requests using CORS Headers (ex: Access-Control-Allow-Origin)
+4. if a client does a cross-origin request on S3 bucket, we need to enable correct CORS header
+5. You can allow for specific origin or for * (all origins)
+
 
 # CloudFront
 
