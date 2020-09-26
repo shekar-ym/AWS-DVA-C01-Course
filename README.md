@@ -60,6 +60,18 @@ ElastiCache
 8. For Redis - encryption at rest using KMS, in-transit using Redis AUTH
 
 
+Elasticache strategies
+1. Lazyloading/ Cache-aside/Lazy population: Cache hit from Elasticache. If Cache miss, read from RDS aand write it cache.
+   Pros: Only requested data is cached, Node failures are not fatal (but increased latency for cache warming)
+   Cosn: Cache miss (3 round trips ==> delay, Stale data - data updated in RDS and not in cache
+2. Write Through - Add or update cache when DB is updated.
+   Pros: Data in cache is never stale, reads are quick. Write penaly v read penalty
+   Cons: Missing data until it is added/updated in the DB, Cache churn - a lot of data may never be read.
+3. Combine both the strategies for better results / cost.
+
+Cache Evictions and TTL
+1. Cache evictions - Delete item explicitly from cache,  Item is evicted because memory is full and not recently used (LRU), set an item TTL.
+2. TTL use cases - Leaderboards, Comments , Activity streams
 
 
 
