@@ -2,6 +2,67 @@
 This repo contains my notes that i captured during my preparation for AWS Certified Developer Associate certification exam (DVA-C01). Notes are based on Udemy course from Stephane Maarek https://www.udemy.com/course/aws-certified-developer-associate-dva-c01/
 If there is anything wrong, please point them out.
 
+
+# RDS Aurora Elascticache
+1. RDS is a managed service.
+2. Read replicas, Multi AZ
+3. Storage backed by EBS (g2 or i01)
+4. RDS Backups - Daily full backup, 7 days retention (can be upto 35 days)
+5. DB Snapshots - manually triggered by user, retention period can be indefinite
+
+Read replicas and MultiAZ
+1. Read replicas - for performance, within AZ, Cross AZ and Cross region
+2. Read replicas - Async replication betweeen Master and read replica ==> reads are eventually consistent.
+3. Read replicas - can be promoted to its own DB
+4. Read replicas - Network cost ==> if data goes from one AZ to another. Same AZ -- NO cost
+5. MultiAZ - for DR + Availability, SYNC replication, automatics app failover. 
+6. MultiAZ - not used for scaling.
+7. Read replicas can be setup as MultiAZ for DR.
+8. IAM Authentication integrated with RDS
+
+RDS Security and Encryption
+1. Encryption at rest: Master and read replicas can be encrypted using AES 256 encryption
+2. Encrypton has to be set at launch/create time
+3. If master is not encrypted, then read replicas CANNOT be encrypted.
+4. In flight encryption: SSL certificates to encrypt data to RDS
+5. To enforce SSL for Postgre SQL: set rds.force_ssl=1 in AWS RDS Console (parameter groups).
+6. To enforce SSL for MySQL: Within the DB: GRANT USAGE ON *.* TO 'mysqluser'@'%' REQUIRE SSL;
+7. Snapshot of unencrypted RDS DB = un-encrypted
+8. Snapshot of encrypted RDS DB = encrypted
+9. Can copy a snapshot into an encrypted one.
+10. To encrypt an un-encrypted RDS DB - Create snapshot, copy snapshot and enable encryption, restore DB from encrypted snapshot, migrate app to new DB
+11. RDS DBs are usually deployed in private subnet
+12. RDS Security groups = same as EC2 SGs
+13. Access Management = IAM policies control access/who manage RDS
+14. IAM Auth = RDS MySQL and Postgre SQL. Uses IAM Auth token (15 mins lifetime)
+
+Aurora
+1. Postgre and MySQL are supported as Aurora DB
+2. HA Native, Failover is instantaneous. 
+3. 6 copies across 3 AZ. 4/6 for writes, 3/6 for reads.
+4. 1 Master + 15 Aurora Read replicas. Supports CRR.
+5. Writer endpoint points to Master.
+6. Reader endpoint to Read replicas (can be auto scaled).
+7. Encryption at rest sing KMS,in flight using SSL.
+8. IAM Authentication using IAM token
+9. Aurora serverless - good for infrequent, intermittent and unpredictable workloads. Pay per second.
+10. Global Aurora - Aurora CRR, Aurora Global Database (1 Primary region -read/write, 5 secondary regions read only with 16 read replicas per secondary region)
+11. After a DB is created. you cant change the VPC selection.
+
+ElastiCache
+1. In-memory DBs - Redis, Memcached
+2. Write scaling using sharding, Read scaling using Read replicas.
+3. Multi AZ with failover capability
+4. Cache hit, Cache miss (includes write back to cache). Has cache invalidation.
+5. User session store.
+6. Redis - multi AZ with auto failure, read replicas, Data durability using AOF persistence - even after cache is restarted, data remains in cache. 
+7. Memcached - Muti-node for partitioning of data (sharding), Non-persistent, No backup and restore.
+8. For Redis - encryption at rest using KMS, in-transit using Redis AUTH
+
+
+
+
+
 # Route 53
 1. Managed DNS.
 2. A record - hostname to IPv4
