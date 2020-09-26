@@ -2,6 +2,35 @@
 This repo contains my notes that i captured during my preparation for AWS Certified Developer Associate certification exam (DVA-C01). Notes are based on Udemy course from Stephane Maarek https://www.udemy.com/course/aws-certified-developer-associate-dva-c01/
 If there is anything wrong, please point them out.
 
+# EC2 Storage - EBS and EFS
+1. EBS -- Its a network drive, locked to an AZ ==> take snapshot and move to other AZ, can be detached from an EC2 instance and attached to another one.
+2. EBS - has provisioned capacity (GBs,IOPS). Billed for all the provisioned capacity. Capacity can be increased on the fly.
+3. GP2, IO1, ST1 (HDD), SC1 (HDD). Only GP2 and IO1 can be used as boot volumes.
+
+EB2 Volume Types:
+1. GP2 - Virtual Desktops, Dev and Test env. 1GB to 16 TB, Max IOPS 16000, Small gp2 can busrt upto 3000, 3 IOPS per GB, 5333 GB = max IOPS
+2. IO1 - Critical business apps that require more than 16000 IOPS, Large DB workloads, 4G to 16 TB, Max 32000 IOPS, 50 IOPS per GB
+3. ST1 - Streaming work loads, Big data, DWH, Log processig, Apache Kafka. 500 GB to 16 TB, Max IOPS 500, Max throughput 500 MiB/s- can burst
+4. SC1 - For infrequently accesses data, Cost important use cases, 500 GB to 16 TB, Max IOPS 250, Max throughput 250 MiB/s- can burst
+
+EBS Volume v Instance store
+1. Instance store = ephemeral storage, physically attached disk. Better IO performance, Cache use cases, 
+2. Data survives reboot, On stop termination, cant resize, Manual backups
+
+EFS
+1. Managed NFS
+2. EFS works with EC2 instances in multi AZ. Highly scalable
+3. Use cases: Content management, web serving, data sharing, wordpress
+4. Compatible with Linux bases AMI, POSIX file system
+5. Encryption at rest using KMS
+6. 2 performance modes (General purpose - default, Max IO (higher latency)
+7. Storage Tiers (life cycle management feature) - Standard (Frequently accessed), EFS-IA, 
+
+EBS v EFS
+1. EBS - can be attached to 1 EC2 instance at a time, locked to AZ. GP2 - increase disk size increases IOPS, IO1 - IOPs can be increased independently
+2. Migrate EBS vol across AZ: Take snapshot, restore snapshot to another AZ.
+3. By default - EC2 instance terminated, EBS is deleted. Can be changed. EBS - whole of proivisoned storage is billed.
+4. EFS - can be mounted to 100s of EC2, POSIX, Use EFS-IA to save cost, billed only for what you use
 
 # RDS Aurora Elascticache
 1. RDS is a managed service.
