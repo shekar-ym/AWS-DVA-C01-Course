@@ -119,10 +119,9 @@ Auto Scaling policies
 4. Scaling Cooldown: Cool down period helps to ensure that ASG does not launch or terminate instances before previous scaling activity takes effect. 
 5. Defaut cooldown period = 300 secs and can be set based on requirement.
 
-
-
-
-
+Quiz:
+1. SNI (Server Name Indication) is a feature allowing you to expose multiple SSL certs if the client supports it. Read more here: https://aws.amazon.com/blogs/aws/new-application-load-balancer-sni/
+2. Network Load Balancers expose a public static IP, whereas an Application or Classic Load Balancer exposes a static DNS (URL)
 
 # EC2 Storage - EBS and EFS
 1. EBS -- Its a network drive, locked to an AZ ==> take snapshot and move to other AZ, can be detached from an EC2 instance and attached to another one.
