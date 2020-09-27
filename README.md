@@ -112,6 +112,17 @@ Auto scaling groups
 10. To update ASG - provide new launch configuration or launch template.
 11. IAM roles attached to SG will get assigned to EC2 instances.
 
+Auto Scaling policies
+1. Target Tracking scaling. Example: I wanted average ASG CPU to stay around 40%
+2. Simple / Step scaling: When a CloudWatch alarm is triggered (>70%), add 2 units, when <30 %, then remove 1
+3. Scheduled Actions: Scale based on know usage patterns.
+4. Scaling Cooldown: Cool down period helps to ensure that ASG does not launch or terminate instances before previous scaling activity takes effect. 
+5. Defaut cooldown period = 300 secs and can be set based on requirement.
+
+
+
+
+
 
 # EC2 Storage - EBS and EFS
 1. EBS -- Its a network drive, locked to an AZ ==> take snapshot and move to other AZ, can be detached from an EC2 instance and attached to another one.
