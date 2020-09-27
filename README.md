@@ -2,6 +2,37 @@
 This repo contains my notes that i captured during my preparation for AWS Certified Developer Associate certification exam (DVA-C01). Notes are based on Udemy course from Stephane Maarek https://www.udemy.com/course/aws-certified-developer-associate-dva-c01/
 If there is anything wrong, please point them out.
 
+# AWS Fundamentals IAM + EC2
+1. One IAM role per application.
+2. SGs are firewalls "outside" EC2.
+3. SGs are locked to a region/VPC combination.
+4. Try to avoid use of Elasctic IPs == reflects poor architectural decisions.
+5. User data script is only run once at the instance first start.
+6. EC2 User data script runs with root .
+
+EC2 Instance Launch Types:
+1. OnDemand -for uninterrupted work loads
+2. Reserved instances - Convertible, Scheduled.
+3. Spot instances - for workloads resilient to failure.
+4. Great combo - Reserved for baseline + OnDemand and Spot for peaks.
+5. Dedicated Hosts - Physical dedicated EC2 server, access to sockets and cores, Allocated for 3 year reservation - BYOL, regulatory and compliance req
+6. Dedicated instances - Instances are running on hardware thats dedicated to you, may share h/w with other instances in same account. 
+   No control over instance placement. 
+
+ENI
+1. Logical component in a VPC == virtual network card.
+2. Each ENI has one Primary private IPv4, one or more secondary IPv4.
+3. Also can have one Elastic IPv4 per private IPv4 AND one public IPv4
+4. One or more SGs
+5. A MAC address.
+6. ENI can be created independently and attach them on the fly to EC2 instances for failover. When that happens private IP moves from one EC2 to other.
+7. Bound to specific AZ. 
+8. Each ENI of an Ec2 instance can be associated with different SGs
+
+EC2 Extra
+1. AMI - locked to region
+2. Bustable instance - to handle unexpected traffic and getting the insurance that it will be handled correctly. 
+
 # EC2 Storage - EBS and EFS
 1. EBS -- Its a network drive, locked to an AZ ==> take snapshot and move to other AZ, can be detached from an EC2 instance and attached to another one.
 2. EBS - has provisioned capacity (GBs,IOPS). Billed for all the provisioned capacity. Capacity can be increased on the fly.
