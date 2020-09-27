@@ -33,6 +33,86 @@ EC2 Extra
 1. AMI - locked to region
 2. Bustable instance - to handle unexpected traffic and getting the insurance that it will be handled correctly. 
 
+# AWS Fundamentals : ELB + ASG
+1. Vertical Scalability: Non distributed systems like DBs - RDS, Elasticache.
+2. Horizontal Scalability: Distributed systems. Goes hand in hand with HA.
+3. HA can be passive (RDS Multi AZ) or active (Horizontal scaling)
+4. LB are servers which forwards the traffic to multiple servers downstream.
+5. LBs can seamlessly handle failures of downstream instances using health checks.
+6. Provides SSL termination, enforces stickiness with cookies, HA across AZs
+7. LB can separate pubic and private traffic.
+8 ELB - EC2 LB - managed LB
+9. Health check done on a port and a route (/health is common).
+10. LB - can in internal or external
+11. LB cannot scale instantaneouly - contact AWS for a "Warm up".
+12. 4xx - client induced errors, 5xx- app induced errors, LB error 503 == at capacity or not registered target.
+13. Monitoring - ELB access logs, Cloudwatch metrics for aggregate statistics (connections count)
+
+Classic LB (v1)
+1. Suppors TCP (Layer 4) and HTTP/S (Layer 7).
+2. Health checks are TCP / HTTP based.
+
+ALB
+1. Layer 7  only LB
+2. Load balancing to multiple HTTP app across machines (target groups).
+3. Load balancing to multiple applications on same machine (ex: containers)
+4. Support for HTTP/2 and website, support redirects from HTTP to HTTPS
+5. Routing tables for different target groups - routing based on path in URL, routing based on hostname in URL, routing based on query string, headers.
+6. ALB great fit for micro services and container based application, has dynamic port mapping
+7. Target groups - EC2 instances (ASG), ECS tasks, Lambda functions, IP addresses (must be private IPs).
+8. X-forwarded-For, X-Forwarded-Port, X-forwarded-Proto - application servers should look for these in headers if they have a requirement.
+
+NLB
+1. Layer 4 only LB, Forward TCP & UDP traffic to your instaces, can handle millios of requests per second.
+2. Latency ~ 100 ms (vs 400 ms for ALB).
+3. Has 1 static IP address per AZ and supports assigning Elastic IP (for whitelisting). AWS can assign and EIP or you can choose.
+4. There is no SG associated with NLB unlike ALB. The SG associated with the target instance should allow TCP traffic (over port like 80) from anywhere.
+
+LB Stickiness
+1. Works for CLB and ALB. "Cookie" is used for stickiness and has an expiration date.
+2. Use case: User does not loose session data.
+3. Can bring imbalance to load distribution.
+4. For CLB - stickiness at LB level. For ALB - stickiness is at Target group level.
+
+Cross zone LB
+1. LB will distributes evenly across al registered instances in all AZ.
+2. CLB - disabled by default. No charge for inter AZ data
+3. ALB - always ON. Cant be disabled. No charges for inter AZ data.
+4. NLB - disabled by default. Charged for inter AZ data if enabled.
+
+SSL/TLS
+1. Allows traffic between client LB to be encrypted.
+2. TLS is newer version.
+3. Public SSL is issued by Certificate Authorities and has an expiration date.
+4. LB uses X.509 certificates (SSL/TLS server certificate).
+5. HTTPS listener - must specify a default cert
+6. Clients can use SNI (Server name indication) to specify the host name they reach.
+7. SNI solves the problem of loading multiple SSL certs onto one web server  (to serve multiple websites).
+8. SNI requires the client to indicate the hostname of the target server in the intial SSL handshake.
+9. Server will then find the correct certificate or return default one.
+10. SNI works for ALB, NLB and CloudFront.
+11. Multiple SSL certs ===> ALB or NLB. Uses SNI
+12. CLB supports only one SSL cert. For CLB to support multiple certs, you need to use multiple CLBs
+
+ELB - Connection Draining
+1. For CLB == Connection Draining, For Target group == Deregistration Delay (ALB and NLB).
+2. Time to complete "in flight requests" while the instance is de-registering or unhealthy. Default 300 secs (1 to 3600 secs). Can be disabled (value = 0)
+3. Stops sending new reqs to the instance which is de-registering.
+
+Auto scaling groups
+1. Automatically register new instances with LB.
+2. Launch Configuration : AMI + Instance type, EC2 user data, EBS Volumes, SGs, SSH Key pair. 
+3. Min size, Max size, Initial capacity, Network + subnets info, LB info, Scaling policies.
+4. Auto scaling Alarms - possible to scale ASG based on Cloutwatch alarms.
+5. Metrics are computed for overall ASG instances (average CPU).
+6. Auto scaling new rules - auto scaling rules managed directly by EC2 - 
+7. Target average CPU usage, number of requests on ELB per instance, Average Network in, Average Network out.
+8. Auto scaling custom metric - example - number of connected users. 
+9. Send custom metric from App on EC2 to CloudWatch, create Cloudwatch alarm which will trigger the scaling policy.
+10. To update ASG - provide new launch configuration or launch template.
+11. IAM roles attached to SG will get assigned to EC2 instances.
+
+
 # EC2 Storage - EBS and EFS
 1. EBS -- Its a network drive, locked to an AZ ==> take snapshot and move to other AZ, can be detached from an EC2 instance and attached to another one.
 2. EBS - has provisioned capacity (GBs,IOPS). Billed for all the provisioned capacity. Capacity can be increased on the fly.
