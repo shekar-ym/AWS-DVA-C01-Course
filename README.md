@@ -355,8 +355,42 @@ S3 Consistency Model
 4. AWS CLI on EC2 == right way ==> IAM roles attached to EC2 instances.
 5. Inline policies - added to role on top of policy/permission which it already has. Which means these policies cannot be added to other roles. 
 6. Inline policies - one to one to a role.
-7. Policy Simulator - 
+7. AWS CLI Dry Runs: --dry-run option
+8. AWS CLI STS Decode Errors : API calls results in long error message, use STS command line "decode-authorization-message" to decode the error.
+9. aws sts decode-authorization-message --encoded-message 
+10. EC2 instance metadata - http://169.254.169.254/latest/meta-data. You can retrieve the IAM role name but you cannot retrieve IAM policy.
+11. http://169.254.169.254/latest -- gives dynamic,meta-data,user-data
+12. http://169.254.169.254/latest/meta-data/iam/security-credentials/MyRoleName - when a role is attached to an EC2 instance, the EC2 instance gets a temperory 
+   access key, secret access key and token - which will be used by EC2 to perform its actions. These credentials are short lived (1 hour).
+13. aws configure --profile
+14. MFA with CLI - to use MFA, you must create temperory session and must run STS GetSessionToken API call.
+15. AWS SDK - use when ou code against AWS services
+16. AWS CLI - uses Python SDK (boto3)
+17. If no region is specified or configure a default region - us-east-1 will be chosen by default.
+18. AWS Limits/Quotas: API Rate Limits, Service Quotas/Service Limits
+19. API Rate Limits - For intermittent errors  / ThrottlingException - use exponential backoff, For consistent errors - use API throttling limit increase
+20. Service Quotas - increase by opening a ticket, Service Quotas API to request increase.
+21. Throttling Exception - Use exponential backoff. Retry mechanism included in SDK API calls, If using API as is - you must implement retry yourself.
+22. Credentials Provider Chain - CLI will look for credentials in following order
+    1. Command Line options: --region, --output, --profile
+    2. Environment Variables - AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
+    3. CLI Credentials file ~/.aws/credentials
+    4. CLI Configuration file: aws configure
+    5. Container credentials
+    6. Instance profile credentils - for EC2 instance profiles
+23. Java SDK (ex) will look for credentials in following order
+   1. Environment Variables - AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+   2. Java System properties - aws.accessKeyId and aws.secretKey
+   3. default credentials profile file: @ ~/.aws/credentials
+   4. ECS container credentials
+   5. EC2 instance profile credentials
+24. If working within AWS, use IAM role (EC2 instance roles, ECS task roles, Lambda roles)
+25. If working outside AWS, use Environment variables or names profiles
+26. If you are not using CLI or SDK to make AWS HTTP API calls, then you need to sign them using SigV4.
+    Use HTTP Header Option, Query String option (S3 pre-signed URLs)
 
+
+# Advanced S3 and Athena
 
 # CloudFront
 
