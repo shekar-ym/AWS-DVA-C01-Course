@@ -348,6 +348,16 @@ S3 Consistency Model
 5. DELETE 200 ==> GET 200
 6. NO WAY TO REQUEST "STRONG CONSISTENCY"
 
+# AWS CLI, SDK, IAM Roles and Policies
+1. CLI installation troubleshooting: aws:command not found ===> the aws executable not in the PATH environment variable.
+2. PATH allows your system to know where to find "aws" executable.
+3. AWS Config ==> creates 2 files @.aws -- config ==> which contains the default region where calls will be sent, credentials ===> contains access key and secret access key
+4. AWS CLI on EC2 == right way ==> IAM roles attached to EC2 instances.
+5. Inline policies - added to role on top of policy/permission which it already has. Which means these policies cannot be added to other roles. 
+6. Inline policies - one to one to a role.
+7. Policy Simulator - 
+
+
 # CloudFront
 
 
