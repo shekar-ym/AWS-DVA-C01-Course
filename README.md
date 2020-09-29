@@ -408,17 +408,19 @@ S3 Consistency Model
 15. Amazon Glacier Deep Archive: Standard (12 hours), Bulk (48 hours). Minimum 180 days.
 16. If replication is enabled on a bucket, then objects cant be on Glacier Tier.
 17. S3 Lifecycle Policies: Transition actions, Expiration actions (to delete older version of files, delete incomplete multi part upload)
-18 
-
-
-
-
-
-
-
-
-
-
+18. 3500 PUT/COPY/POST/DELETE and 5500 GET/HEAD requests per second per prefix in a bucket.
+19. If SSE-KMS is used, GenerateDataKey API is called when you upload and Decrypt KMS API is called for a download action.
+20. You cannot request quota increase for KMS. 
+21. Use multi part upload for files > 100 MB. 
+22. S3 Transfer acceleration (upload only) - works with multi part upload, uses edge locations
+23. S3 Byte range fetches - to speed up downloads. Can be used to retrieve only partial data (ex: head of file).
+24. S3 Select and Glacier Select : Retrieve less data using SQL by performing server side filtering. 
+25. S3 Event notifications: S3:ObjectCreated, S3:ObjectRemoved, S3:ObjectRestore, S3:Replication ... Use case: generate thumbnails of uploaded images
+26. If you want to ensure an event notification is generated for every successful  write, enable versioning on your bucket.
+27. S3 Event notifications - Target - SNS, SQS and Lambda.
+28. AWS Athena - serverless. BI/analytics/reporting - VPC Flow Logs, ELB Logs, CloudTrial Logs
+29. S3 Object Lock: Adopt WORM model, Block an object version deletion for a specified amount of time.
+30. Glacier Vault Lock: Adopt WORM model, Lock the policy for future edits, used for compliance and data retention.
 
 # CloudFront
 
@@ -573,7 +575,22 @@ S3 Consistency Model
   ECS Quiz
   Which ECS Config must you enable in /etc/ecs/ecs.config to allow your ECS tasks to endorse IAM roles = ECS_ENABLE_TASK_IAM_ROLE
   
+# AWS Elasctic Beanstalk
+  1. We still have full control over the configuration.
+  2. Managed service. Instance configuration and OS is handled by Beanstalk
+  3. Deployment strategy is configurable but performed by Beanstalk.
+  4. Developer is responsible for application code only
+  5. Application, Application version, Environment name (dev,test,prod)
+  6. Supports single and multi docker containers along with other plaforms and languages
+  7. RDS  can be created as part of Beanstalk environment or application. But when Beastalk is deleted DB gets deleted. So it is upto you to create an RDS DB ouside Beanstalk. 
+  8. As part of Beanstalk, a LB can be chosen only while creating Beanstalk. Not after that.
+  9. 
   
+  
+# AWS CI/CD: CodeCommit, CodePipeline, CodeBuild, CodeDeploy
+# AWS CloudFormation
+# AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrial
+# AWS Integration and Messaging: SQS, SNS and Kinesis
 # AWS Serverless: Lambda
 # AWS Serverless: DynamoDB
 # AWS Serverless: API Gateway
