@@ -391,11 +391,36 @@ S3 Consistency Model
 
 
 # Advanced S3 and Athena
+1. S3 MFA-Delete - S3 versioning should be enabled. Needed only to delete an object permanently, to disable versioning
+2. Only bucket owner (root account) can enable/disable MFA-Delete. Will need root access keys.
+3. S3 Default Encryption v Bucket policies -- Bucket policies are evaluated before default encryption (AES-256, SSE-S3).
+4. S3 Access Logs: Any request made tp S3, from any account, authorized or denied will be logged to an S3 bucket.
+5. CRR and SRR: Asynchronous replication/synching. Must gove proper IAM persmissions to S3
+6. CRR Use case: compliance, lower latency accesss, replication across accounts
+7. SRR Use case: log aggregation, live replication between prod and test accounts
+8. S3 replication == not retroactive. DELETE operations not replicated, no "chaining" of replication. 
+9. S3 pre-signed URLs - can be generated using SDK and CLI.  For downloads (CLI), Uploads (SDK). Validity default 3600 secs
+10.Users given a pre-signed URL will inherit the persmissions of person who generated URL. 
+11. Pre-signed URL Use cases - access to premium content, download access to an ever changing list of users, temporory access to upload file. 
+12. Region needs to be explicitly mentioned while generating pre-signed URL using CLI and also configure sigV4.
+13. Amazon Glacier - Item = Archive (upto 40 TB), Archives are stored in vaults.
+14. Amazon Glacier: Expedited (1 to 5 mins), Standard (3 to 5 hours), Bulk (5 to 12 hours). Minimum 90 days
+15. Amazon Glacier Deep Archive: Standard (12 hours), Bulk (48 hours). Minimum 180 days.
+16. If replication is enabled on a bucket, then objects cant be on Glacier Tier.
+17. S3 Lifecycle Policies: Transition actions, Expiration actions (to delete older version of files, delete incomplete multi part upload)
+18 
+
+
+
+
+
+
+
+
+
+
 
 # CloudFront
-
-
-
 
   CloudFront Signed URL/Cookies
   1. To distribute paid shared content.
