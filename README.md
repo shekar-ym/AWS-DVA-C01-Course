@@ -625,6 +625,22 @@ S3 Consistency Model
 13. CodeCommit Notifications: CloudWatch Event rules: Trigger for pull request updates(created/updated. deleted/commented), Commit comment events.
 14. CodeCommit supports SSH Keys and HTTPS Git credentials.
 
+CodePipeline
+1. Continouse Delivery. CodePipeline needs "IAM Service Role" to perform its actions.
+2. Source: Github / CodeCommit / S3. 
+3. Build: Codebuild/ Jenkins
+4. Load Testing: 3rd party tools
+5. Deploy: AWS Code Deploy / Beanstalk / CloudFormation / ECS
+6. Made of stages: Each stage = parallel or sequential actions, manual approvals can be defined.
+7. Each pipeline stage create "artifacts" = bunch of files stored in S3 and passed to next stage.
+8. Troubleshooting:  CodePipeline state changes generates a CloudWatch events which can create SNS notifications.
+9. If CodePipeline fails a stage, pipeline stops.
+10. If CodePipeline cant perform an action, check "IAM Service Role" has required permissions
+11. Each stage in a CodePipeline can have multiple action groups (parallel or sequential).
+
+CodeBuild
+1. 
+
 # AWS CloudFormation
 # AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrial
 # AWS Integration and Messaging: SQS, SNS and Kinesis
