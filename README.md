@@ -607,12 +607,24 @@ S3 Consistency Model
   18. Elasctic Beanstalk with Multi Docker Container: helps to run multiple containers per EC2 instance in ELB. Requires config Dockerrun.aws.json (v2) at the root of source code.
   19 . Dockerrun.aws.json is used to generate ECS task definition.
   20. Beanstalk with HTTPS: Load SSL certificate onto LB (from console) or from code: .ebextensions/securelisterner-alb.config
-  21. Web server v Worker Environment: if your application performs tasks that are long to complete,offload these tasks to a dedicated worker environment (SQS + EC2).
-  22. 
-  
-  
-  
+  21. Web server v Worker Environment: if your application performs tasks that are long to complete,offload these tasks to a dedicated worker environment (SQS + EC2). cron.yaml
+
 # AWS CI/CD: CodeCommit, CodePipeline, CodeBuild, CodeDeploy
+1. AWS CodeCommit: storing code, AWS CodePipeline: automating pipeline from code to Beanstalk
+2. AWS CodeBuild: to build and test the code, AWS CodeDeploy: to deploy code to EC2 fleets (not Beanstalk).
+3. CI : Push code to repo + Code build/test (Jenkis CI, AWS CodeBuild)
+4. CD: Deploment happens often and quick (Jenkins CD, CodeDeploy)
+5. Code: CodeCommit, Build + Test: CodeBuild, Deploy + Provision: Elastic Beanstalk, User managed EC2 fleet (CloudFormation) - then use CodeDeploy
+6. CodePipeline: To orchestrate all above steps.
+7. CodeCommit: private Git repos, fully managed, highly available, Secured. Integrates with Jenkins/CodeBuild.
+8. CodeCommit Security: interactions are using Git, Authentication: SSH Keys, HTTPS, MFA. Authorization: IAM Policies,
+9. CodeCommit Security:  Encryption: repos are encrypted using KMS, HTTPS - in transit, 
+10. CodeCommit Security: Cross account: dont share ssh keys, Use IAM Roles + AWS STS (AssumeRole API)
+11. CodeCommit Notifications: SNS, Lambda, AWS CloudWatch Event rules* 
+12. CodeCommit Notifications: SNS, Lambda use cases: Deletion of branches, trigger for pushes that happens in master branch, Trigger AWS Lambda function to perform codebase analysis
+13. CodeCommit Notifications: CloudWatch Event rules: Trigger for pull request updates(created/updated. deleted/commented), Commit comment events.
+14. CodeCommit supports SSH Keys and HTTPS Git credentials.
+
 # AWS CloudFormation
 # AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrial
 # AWS Integration and Messaging: SQS, SNS and Kinesis
