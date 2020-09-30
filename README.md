@@ -584,7 +584,32 @@ S3 Consistency Model
   6. Supports single and multi docker containers along with other plaforms and languages
   7. RDS  can be created as part of Beanstalk environment or application. But when Beastalk is deleted DB gets deleted. So it is upto you to create an RDS DB ouside Beanstalk. 
   8. As part of Beanstalk, a LB can be chosen only while creating Beanstalk. Not after that.
-  9. 
+  
+  Deployment Modes
+  1. All at once: Fastest, has downtime, suits for development environment, no additional cost
+  2. Rolling: Application running below capacity, both version runs simultaneously at some point, no additonal cost, long deployment
+  3. Rolling with additonal batches: Application runs at capacity, both version runs simultaneously at some point, Small additional cost, sutis for prod
+  4. Immutable: Zero downtime, New version of code deployed to temp ASG, Quick roll back in case of failures, High cost, great for prod. 
+  5. Blue/Green: Zero downtime, release facility, Create new "stage" environment and deploy v2, "stage" environment to be validated and roll back if needed
+  6. Blue/Green: Route 53 with weighter policies to redirect traffic to stage environment, swap URLs when testng is done.
+  7. Deployment process: Describe dependencies and zip it along with code.EB will then deploy the zip on each EC2 and resolve dependencies
+  8. Beanstalk Life Cycle Policy - to phase out old application versions. Optionally you can retain source bundle in S3 as part of life cycle policy configuration. 
+  9. All parameters set in UI, can also be configured with code using files and these files should be under .ebextensions/ directory in root of the source code.
+  10. Such files should in YAML or JSON format and should have .config extension. You can add resources such as RDS, Elasticache, DynamoDB etc.
+  11. Any resources managed by .ebextensions get deleted if environment is deleted. 
+  12. Beanstalk uses CloudFormation under the hood.
+  13. Beanstalk Cloning - clones exact environment to another one.
+  14. Beanstalk Migration: ELB type cannot be changed once Beanstalk environment is created. Only configuration of ELB can be updated.
+  15. Beanstalk Migration: To migrate, create a new env with same configuration except LB, deploy application code to new environment and do CNAME swap.
+  15. RDS with Beanstalk: RDS can be provisioned with Beanstalk, which is great for dev/test but not for prod as DB lifecyle is tied to Beanstalk environment lifeccyle.
+  16. RDS with Beanstalk: For prod, create RDS separately and provide its connection string in Beanstalk application. 
+  17. Elasctic Beanstalk with Single Docker: Does not use ECS. 
+  18. Elasctic Beanstalk with Multi Docker Container: helps to run multiple containers per EC2 instance in ELB. Requires config Dockerrun.aws.json (v2) at the root of source code.
+  19 . Dockerrun.aws.json is used to generate ECS task definition.
+  20. Beanstalk with HTTPS: Load SSL certificate onto LB (from console) or from code: .ebextensions/securelisterner-alb.config
+  21. Web server v Worker Environment: if your application performs tasks that are long to complete,offload these tasks to a dedicated worker environment (SQS + EC2).
+  22. 
+  
   
   
 # AWS CI/CD: CodeCommit, CodePipeline, CodeBuild, CodeDeploy
