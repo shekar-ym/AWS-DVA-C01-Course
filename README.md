@@ -301,8 +301,6 @@ VPC Peering, End points, VPC, DX
 8. DX takes time to estabish.
 9. Site-to-Site VPN and DX cannot access VPC Endpoints
 
-
-
 # Amazon S3 Introduction
 1. S3 Object Key = FULL path to the object. s://my_bucket/my_folder/another_folder/my_file.text
 2. Key = prefix + object name. Prefix = my_folder/another_folder, object name = my_file.text.
@@ -650,6 +648,27 @@ CodeBuild
 8. CodeBuild phases - Install (Dependencies), Pre build, Build, Post buid.
 9. CodeBuild containers by default are launched outside VPC.
 10. VPC Configuration like VPC ID, Subnet ID, SG IDs to access resources inside VPC.
+
+CodeDeploy
+1. To deploy application to many EC2 instances automatically (EC2 instances not managed by Beanstalk).
+2. Managed service
+3. Each EC2 instance (or On prem machine) must be running a CodeDeploy agent, which polls the AWS CodeDeploy for work to do. 
+4. CodeDeploy sends appspec.yml file (@root of the source code) which specifies how to deploy the code.
+5. Then application is pulled form GitHub or S3, EC2 will run the deployment instructions.
+6. CodeDeploy agent will report of success/failure of deployment on the instance.
+7. CodeDeploy does not provision any resources.
+8. Deployment type: In-place or Blue/Greem
+9. IAM instance profile: need to give EC2 the permissions to pull from S3/Git hub.
+10. Service role: Role for CodeDeploy to perform the deploy
+11. appesec.yml: 2 sections. File section - how to source and copy from S3/Git Hub to filesystem
+12. Hooks: set of instructions to do deploy the new version. The order of Hooks is Application Stop, DownloadBundle, BeforeInstall, AfterInstall, ApplicationStart, ValidateService*
+13. appsec.yml + deployment strategy ===> define how to deploy the applicaton, Use hooks to verify the deployment after each deployment phase. 
+14. CodeDeploy rollback: You can specify automated rollback - roll back when deployment fails, when alarm thresholds are met or disable rollbacks.
+15. If a roll back happens, CodeDeploy redeploys the last known good revision as new deployment
+
+CodeStar
+1. is an integrated solution that regroups; GitHub, CodeCommit, CodeBuild, CodeDeploy, CloudFormation, CodePipeline, CloudWatch.
+2. Helps to quickly create "CICD-ready" projects for EC2, Lambda, Beanstalk.
 
 
 # AWS CloudFormation
