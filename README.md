@@ -639,7 +639,18 @@ CodePipeline
 11. Each stage in a CodePipeline can have multiple action groups (parallel or sequential).
 
 CodeBuild
-1. 
+1. Managed build service, pay for usage, uses Docker under the hood.
+2. Integrates with KMS for encryption of build artifacts, with IAM for build permissions, VPC for network security, CloudTrial for API logging.
+3. Source code - GitHub, CodeCommit, CodePipeline, S3.
+4. Build instructions defined in code (buildspec.yml file)
+5. Output logs to S3 or AWS CloudWatch logs
+5. CloudWatch alarms to detect failed builds and trigger notifications. 
+6. Builds can be defined within CodePipeline or CodeBuild itself.
+7. buildspec.yml must be in root of your code.
+8. CodeBuild phases - Install (Dependencies), Pre build, Build, Post buid.
+9. CodeBuild containers by default are launched outside VPC.
+10. VPC Configuration like VPC ID, Subnet ID, SG IDs to access resources inside VPC.
+
 
 # AWS CloudFormation
 # AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrial
