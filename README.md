@@ -672,7 +672,57 @@ CodeStar
 
 
 # AWS CloudFormation
+1. Declarative way of outlining AWS infra, for any resources
+2. Infra as Code, code is version controlled.
+3. Cost: Each resource is tagged to track the costs.
+4. Templates uploaded to S3 and referenced in CloudFormation.
+5. To update a template, re-upload a new version. 
+6. Components: Resources (Mandatory)
+7. Components: Parameters - for dynamic inputs
+8. Components: Mappings - static variables 
+9. Components: Outputs - Reference to what is created
+10. Components: Conditionals: List of conditions to perform resource creation.
+11. Components: Metadata. 
+12. Template helpers: References, Functions
+13. Resources can reference other resources
+14. Can i create dynamic amount of resources? NO.
+15. Parameters - a way to provide inputs to CloudFomation template. Use them when you want to reuse your templates, when some inputs cannot be determined ahead of time.
+16. Fn::Ref   to reference a parameter. Shorthand !Ref
+17. Pseudo parameters: AWS provided parameters. AWS::AccountId, AWS::Region ...
+18. Mappings - fixed variables within CF templates, Hardcoded. 
+19. Use mappings when you know the values in advance, Use parameters when values are use specific.
+20. Accessing Mapping values: Fn::FindInMap
+21. Outputs: Optional. Can import the values into other stacks (Fn::ImportValue). Use Export block. Use case: Cross stack collaboration.
+22. You cant delete the underlying stack untill all the references are deleted too. 
+23. Conditions: to control creation of resources based on conditions.
+24. Instrinsic Functions: Ref, Fn::GetAtt, Fn::FindInMap, Fn::ImporValue, Fn::Join, Fn::Sub
+25. Fn::Ref - To refer Parameters and resources (gets only resource id like EC2 id).
+26. Fn::GetAtt - to know the attributes of resources, for ex : AZ of an EC2 machine.
+27. Fn::FindInMap -  to return a named value from a specific key
+28. Fn::ImportValue - Import values that are exported in other templates.
+29. Fn::Join - join values with a delimiter
+30. Fn::Sub - to substitute variables from a text. 
+31. Stack creation failes: By default, everything rolls back. Option to disable rollback for troubleshooting purpose. ROLLBACK_COMPLETE - only option to delete the stack.
+32. Stack update fails:  stack automatically rolls back to previous known working state. UPDATE_ROLLBACK_COMPLETE - update the stack with fixed template. 
+33. ChangeSets: to know what changes are happening before it happens.
+34. Nested stacks: stacks which are part of other stacks. They allow you to isolate repeated patterns/ common components in separate stacks and call them from other stacks.
+35. Cross stacks - helpful when stacks have different lifecycles - Use Export and Fn:ImporValue.
+36. Nested stacks - helpful when components must be re-used. It is not shared and is important to higher level stacks only. re-use how to properly configure an ALB.
+37. Stacksets: Create, update and delete stacks across multiple accounts and regions with a single operation. Only Admins can create stacksets.
+
 # AWS Monitoring & Audit: CloudWatch, X-Ray and CloudTrial
+CloudWatch:
+1. Metrics, Logs, Events, Alarms
+2. Metric - a variable to monitor (CPU Utilization, NetworkIn,..), grouped by Namespaces, 
+3. Dimension - an attribute of a metric (instance id, envrionment ..), you can have 10 dimensions per metric
+4. EC2 memory - custom metric. 
+5. Metric resolution: Standard - 1 min, High resolution metric - 1 second (more cost) ==> related API parameter StorageResolution.
+6. PutMetricData - API call to push metric to CloudWatch.
+7. Exponential back off in case of throttle errors
+8. CloudWatch Alarms - to trigger notifications for any metric, alarms can go to Auto scaling, EC2 Actions, SNS notifications.
+9. Alarm States: OK, ALARM, INSUFFICIENT_DATA
+
+
 # AWS Integration and Messaging: SQS, SNS and Kinesis
 # AWS Serverless: Lambda
 # AWS Serverless: DynamoDB
