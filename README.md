@@ -722,6 +722,35 @@ CloudWatch:
 8. CloudWatch Alarms - to trigger notifications for any metric, alarms can go to Auto scaling, EC2 Actions, SNS notifications.
 9. Alarm States: OK, ALARM, INSUFFICIENT_DATA
 
+CloudWatch Logs:
+1. Applications can send logs to CloudWatch using SDK.
+2. Elastic Beanstalk, ECS, Lambda, VPC Flow logs, API Gateway, CloudTrial, CloudWatch logs from agents. Route53 DNS queries.
+3. CloudWatch Logs can use filter expressions. 
+4. Log groups have Log Streams. Log expiration policy.
+5. To send logs to CloudWatch, check IAM permissions are correct.
+6. Security: Encryption of logs at group level using KMS
+7. By default no logs are sent from EC2 to CloudWatch. You need to run CloudWatch agent and correct IAM permissiosn needs to be set. CloudWatch agent can be installed onprem servers too
+8. CloudWatch Logs agent: Old version, sends to CloudWatch logs
+9. Unified Agent: can collect additional system level metrics like RAM, processes etc + Collect and send to CloudWatch logs, centralized configuration using SSM Parameter store.
+
+CloudWatch Log Metrics Filter:
+1. CloudWatch logs can use filter expressions. For ex: to find a specific IP in log, count occurances of "ERROR".
+2. Metrics filter can be used to trigger alarms.
+3. Filters do not retroactively filter data. Only after filter is created.
+
+CloudWatch Events:
+1. Scheduled: Cron Jobs, Event Pattern: Event rules to reach to a service doing something (ex. CodePipeline state changes).
+2. Triggers to Lambda functions, SQS/SNS/Kinesis Messages
+
+EventBridge
+1. 
+
+
+
+
+
+
+
 
 # AWS Integration and Messaging: SQS, SNS and Kinesis
 # AWS Serverless: Lambda
