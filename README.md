@@ -821,8 +821,67 @@ Quiz:
 30. SQS FIFO - Message Grouping - If you specify the same value of MessageGroupID in FIFO queue, you can only have one consumer and all messages are in order.
 31. To get ordering at the level of subset of messages, specify different values for MessageGroup ID - Messages that share a common Message Group ID will be in order within the group. Each Group ID can have a differrent consumers (parallel processing), Ordering across groups is not guaranteed. 
 
+SNS:
+1. Pub/Sub model.
+2. "Event Producer" sends message to one SNS topic. "Event receivers" / subscribers get all messages.
+3. Subscribers : SQS, HTTP/S, Lambda, Emails, SMS, Mobile Notifications.
+4. SNS Integrations: Ex: CloudWatch Alarms, ASG, S3 bucket events, CloudFormation.
+5. Topic Publish and Direct Publish (publishing to end point).
+6. In-fligh encryption - HTTPS API (default), At-rest encryption using KMS, Client side encryption if client wants to perform encryption and decryption. 
+7. Access Controls: IAM Policies to regulate access to SNS API
+8. SNS Access Policies: similar to S3 bucket policies - Cross account access to SNS Topics, for allowing other services (SNS, S3...) to write to an SNS topic.
 
+SNS + SQS Fanout
+1. SNS cannot send messages to SQS FIFO queues (AWS Limitation).
+2. S3 Events to multiple queues.
 
+AWS Kinesis
+1. Managed alternative to Apache Kafka
+2. Great for application logs, metrics, IoT, clickstreams ==> "Real time" big data/
+3. Data is automatically replicated to 3 AZ.
+4. Kinesis Streams - low latency streaming ingest at scale
+5. Kinesis Analytics: perform real-time analytics on streams using SQL.
+6. Kinesis FIrehouse: Load streams into S3, Redshift, ElastiSearch.
+
+Kinesis Streams
+1. Streams are divided into ordered shards/partitions. Data retention 1 day (default), upto 7 days
+2. Data can be reprocessed/replayed.
+3. Multiple applications can consume the same stream
+4. Once data s inserted to Kinesis, it can be deleted - immutability.
+5. One stream is made of different shards, 1 MB/s or 1000 messages/s at write PER SHARD, 2 MB/s at read PER SHARD.
+6. Recods are ordered per shard.
+7. Kinesis API: PutRecord API + Partition key that gets hashed. The same key goes to same partition (helps ordering).
+8. Choose a partition key that is highly distributed. user_id if many users.
+9. Use Batching with PutRecods to reduce costs and increase throughput
+10. ProvisionedThroughputExceeded if we go over limits - use exponential backoff., increase shards, choose good partition key
+11. KCL- Kinesis Client Library - to consume data from Kinesis streams efficiently.
+12. KCL- Kinesis Client Library - Java library to read records from a Kinesis Streams with ditributed applications sharing the read workload.
+13. Rule: each shard be read by only one KCL instance. 
+14. 4 shards = max 4 KCL instances, 6 sharads = max 6 KCL instances.  Check point progress logged in DynamoDB (need permissions) and scale accordingly.
+15. KCL can run on EC2, Elastic Beanstalk, on-prem applications.
+16. Records are read in order at the shard level.
+17. Kinesis Security: Control/access using IAM policies, Encryption in flight using HTTPS end points, At-rest using KMS
+18. VPC Endpoints available fo Kinesis to access within VPC
+
+Kinesis Analytics
+1. Perform real time analytics on Kinesis Streams usign SQL
+2. Autoscaling, Managed, Realtime
+3. Pay for actual consumption rate.
+
+Kinesis Firehose
+1. Fully managed, Neal real time (60 sec latency)
+2. Load data to Redshift, S3, ElasticSearch, Splunk
+3. Automatic Scaling.
+4. Pay for what data goes through Firehose
+
+Data Ordering: Kinesis Vs SQS FIFO
+1. Kinesis - Choose a right Partition Key. for ex: truck_id
+2. For SQS FIFO:  if you dont use Group ID, messages are consumed in order they are sent, with only one consumer.
+3. If you want to scale the number of consumers, but you want messages to be "grouped" when they are related to each other- use Group ID
+
+Quiz:
+1. in KCL, you can have maximum of EC2 instances running in parallel equal to the number of shards in your Kinesis Stream
+2. You can have as many consumers as GroupID for your FIFO queues.
 
 # AWS Serverless: Lambda
 # AWS Serverless: DynamoDB
