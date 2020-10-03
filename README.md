@@ -789,6 +789,41 @@ Quiz:
 4. Which API is not used for writing to X-Ray: BatchGetTraces
 
 # AWS Integration and Messaging: SQS, SNS and Kinesis
+1. SQS - Queue Model, SNS - Pub/Sub model, Kinesis - real time streaming model
+2. SQS - One Queue can have multiple producers and multiple consumers
+3. Standard Queue - Fully managed, to decouple applications. No limit on messages, Default retention: 4 days, max 14 days.
+4. Limiation of 256 KB per message sent.
+5. Atleast once delivery, best effort ordering/sorting
+6. SendMessage API to send messages to SQS queue. 
+7. Consumers - running on EC2 / AWS Lambda. 
+8. DeleteMessage API - to delete the message from queue after processing it.
+9. SQS with ASG - Use CloudWatch Metric - Queue Lenght (ApproximateNumberOfMessages) ===> CloudWatch Alarm to scale out/in.
+10. SQS Security -  In-fligth encryption - HTTPS API (enabled by default), At-rest encryption - KMS keys, Client side encryption if client wants to perform encryption/decryption itself.
+11. Access Controls: IAM policies to regulate access to SQL API, SQS Access Policies: For cross account access to SQS Qs, for allowing other services (SNS, S3...) to write to an SQS Q.
+12. By default, only owner can send/receive messages from the SQS Queue. You can configure other AWS accounts, Users and roles.
+13. Message Visibility Timeout - when a message is polled by consumer, it becomes invisible to other consumers. Default: 30 secs.
+14. After Message visibility timeout expires, if the message is not processed/deleted, it will be added back to the queueu.
+15. ChangeMessageVisibity - API a consumer should call to get more time to process the message, else a message can be processed more than once.
+16. Dead Letter Queue - A threshold of how many times a message can go back to the queue "MaximumReceives" can set. After the threshold is exceeded, the message goes into DLQ.
+17. DLQ - helpful to debugging. Good to set retention period of DLQ to max = 14 days
+18. Delay Queue - Delay a message (consumers dont see it immidiately) up to 15 mins. Default is 0 seconds. Can be set at queue level.
+19. Delay queue default time  can be overridden on send using DelaySeconds parameter
+20. Long Polling - When a consumer request messges from queue, it can "wait" (optional) for messages to arrive if there are no messages in queue.
+21. Long Polling - to decrease number of API calls made to SQS and increase the efficiency and latency of your application.
+22. Long Polling - can be set 1 sec to 20 sec. Long Polling preferred over short polling. 
+23. Long Polling - can be enabled at queue level or at API leve using ReceiveMessageWaitTimeSeconds.
+24. SQS Extended Client - Message limit is 256 KB, if it is more than this, use SQS Extended Client (Java library), sends large message to S3 + related metadata to SQS Queue.
+25. Consumer will read metadata from SQS Queue and retrieve large message from S3 based on metadata. For ex: processing video files.
+26. SQS FIFO Queue - First In First Out - ordering of messages in the queue. Limited throughput: 300 messages/s, 3000 messages/s with batching.
+27. SQS FIFO queue name should end with .fifo
+28. De-duplication interval: 5 mins. If a same message is received more than once within this interval, second one would be ignored.
+29. Two de-duplication methods: Content based deduplication (will do a SHA 256 hash of the message body) AND Explicitly provide a Message Deduplication ID.
+30. SQS FIFO - Message Grouping - If you specify the same value of MessageGroupID in FIFO queue, you can only have one consumer and all messages are in order.
+31. To get ordering at the level of subset of messages, specify different values for MessageGroup ID - Messages that share a common Message Group ID will be in order within the group. Each Group ID can have a differrent consumers (parallel processing), Ordering across groups is not guaranteed. 
+
+
+
+
 # AWS Serverless: Lambda
 # AWS Serverless: DynamoDB
 # AWS Serverless: API Gateway
