@@ -884,6 +884,158 @@ Quiz:
 2. You can have as many consumers as GroupID for your FIFO queues.
 
 # AWS Serverless: Lambda
+1. Virtual functions, limited by time, run on demand.
+2. Pay per request and compute time
+3. Increasing RAM will also improve CPU and network !!
+4. Docker is not for AWS Lambda, its for ECS/Fargate
+5. Some of integrations: API Gateway, Kinesis, DynamoDB, S3, CloudFront, CloudWatch Events/Event bridge, SNS, SQS, Cognito
+6. IAM Execution Role: Defines permisions for Lambda to work with other AWS services. Fro example: to write logs to CloudWatch logs. 
+7. Billed in increments of 100 ms, Min RAM = 128 MB.
+8. Lambda Function file/code, Lambda Handler - function name in code.
+
+Synchrnous Invocation
+1. CLI, SDK, API Gateway, ALB
+2. Results are returned rightaway from Lambda
+3. Error handling must happen on client side (retries, exponential backoff ...)
+4. User invoked (ALB, API Gateway, CloudFront, S3 Batch) Service invoked (Cognito, Step Functions), Other services (Lex, Alexa, Kinesis Data Firehose)
+
+Lambda integration with ALB
+1. To expose a Lambda function as an HTTP/S end point.
+2. Must be registerd in a target group
+3. Invoked synchronously.
+4. ALB to Lambda: HTTP to JSON. Lambda to HTTP: JSON to HTTP
+5. ALB Multi header values: ALB can support multi header values (ALB setting at target group level). HTTP: http://example.com/path?name=foo&name=bar
+6. When you enable multi value headers, HTTP headers and quey string parameters that are sent with multiple values are shown as arrays within the AWS Lambda event and respone objects. JSON: "queryStringParameters":{"name": ["foo","bar"]}
+7. Health checks in ALB Target group settings - will count as a request for Lambda function.
+8. A resource based policy is auto added at Lambda level to allow requests from ALB
+
+Lambda@Edge
+1. Run a global Lambda function or to implement a request filtering before reaching the application.
+2. Use case: Build more responsive applications, Customize CDN content.
+3. To change CloudFront requests and responses.
+4. Viewer request: after CloudFront receives a requesst from a viewer.
+5. Origin request: CloudFront forwards the request to the origin.
+6. Origin response: After CloudFront receives response from the origin
+7. Viewer response: Before CloudFront forwards the response to the viewer.
+8. You can also generate responses to viewers without ever sending the request to the origin.
+9. Runs code in each CloudFront Edge, globally.
+10. Usecases: Website security and privacy, Dynamic web application at the Edge, Search Engine Optimization, Route across origins and DCs, Bot mitigation at the Edge, Real-time Image transformation, A/B testing, User auth and authorization, User tracking and analytics.
+
+Lambda Async Invocations.
+1. S3, SNS, CloudWatch events.
+2. Lambda re-triesd 3 times with exponential kind of delays.
+3. If the function in retried, CloudWatch Logs will have duplicate entries. Can define a DLQ to failed processing.
+4. S3, SNS, CloudWatch Events/Event bridge, CodeCommit, CodePipeline
+5. --invocation-type Event ===> Asynchronous invocation. 
+
+Lambda-CloudWatch Events / EventBridge
+1. CRON or Rate / EventBridge Rule or CodePipeline EventBridge Rule (trigger state changes)
+2. Resource based policies: Permissions for other functions to invoke Lambda
+
+Lambda Event Source Mapping
+1. Records needs to be polled from the source by Lambda Event Source Mapping which then synchrnously invokes Lambda function with event batch.
+2. Kinesis Data Streams, SQS & FIFO Queues, DynamoDB Streams
+3. Streams (Kinesis, DynamoDB): Event source mapping creates a iterator for each shard, processes items in order. 
+4. Start with new items, from the beginning, or from a timestamp.
+5. Processed items are not removed from the stream (other consumers can read them)
+6. Ability to process multiple batches in parallel. Upto 10 batches per shard. in-order processing is guaranteed for each partition key.
+7. Error handling - By default if a function returns an error, the entire batch is reprocessed until the function succeeds or items in the batch expire.
+8. Discarded events can go to Destinations.
+9. Lambda SQS + SQS FIFO:  Event Source mapping will poll SQS using Long Polling. Batch size 1 to 10. DLQ configured at SQS not at Lambda.
+
+Lambda Destination:
+1. Result of an async invocation or failure of event mapper into Destinations.
+2. Async invocations: can define Destinations for successful and failed event - SQS, SNS, Lambda, EventBridge bus. AWS recommends Destinations over DLQ.
+3. Event Source Mapping: for discarded event batches - SQS, SNS
+
+Lambda Permissions:
+1. Lambda Execution Role: Grants required permission to Lambda to AWS services/resources
+2. When Event Source mapping is used to invoke Lambda function, Lambda uses execution role to read the event data.
+3. Resource Based Policy: to give other accounts and AWS services permission to use Lambda resources.
+
+Lambda Environment Variables
+1. Env variable = key/value pair in String form, which will be available for your code. 
+2. Can be encrypted by KMS (using Lambda service key or your own CMK).
+
+Lambda Monitoring and Logging
+1. Lambda execution logs are stored in AWS CloudWatch Logs. Lambda should have an execution role with an IAM policy to write to CloudWatch logs
+2. CloudWatch Metrics
+3. X-Ray: Enable in Lambda configuration (Active tracing), runs X-ray daemon, use X-Ray SDK in code, Make sure Lambda has a correct Execution role to write data to X-Ray.
+4. Envionment variables: AWS_XRAY_DAEMON_ADDRESS - X-Ray Daemon IP Address and Port
+
+Lambda in VPC
+1. By default, Lambda function are launched in AWS owner VPC. Can access www == so can access DynamDB/S3
+2. To have Lambda in your VPC, you need to define VPC ID,Subnet and SGs.
+3. Behind the scenes, Lambda will create an ENI in your subnets. For this Lambda need AWSLambdaVPCAccessExecutionRole
+4. Lambda functon in VPC does not have internet access, even if it is deployed in public subnet (no public IP is allocated).
+5. Use NAT Gateway/instance to provide internet access to Lambda in private subnet. In this case, use VPC Endpoints to access services like DynamoDB or S3 without NAT
+6. CloudWatch logs works even wihtout endpoints or NAT gateway.
+
+Lambda Function Performance
+1. RAM: 128 MB to 3008 MB in 64 MB increments
+2. More RAM more vCPU credits. At 1792 MB, function has one full vPU.
+3. If your application is CPU bound, increase RAM
+4. Timeout: Default 3 secs. max 900 secs
+5. Lambda execution context: temp run time environment that initializes any external dependencies of the Lambda code.
+6. Lambda execution context: Great for DB connections, HTTP client, SDK clients
+7. Lambda execution context: is maintaned for sometime, so that next function invocation can "re-use" the context and save time.
+8. Lambda execution context: includes /tmp directory. Max 512 MB. Contents of /tmp space remains when execution context is frozen, providing transient cache for multiple invocations.
+9. For permanent persistence storage, use S3.
+
+Lambda Concurrency and Throttling
+1. Concurrency Limit: 1000 concurrent executions
+2. Can set reserved concurrency at function level = limit
+3. Each invocation over the concurrency limit will trigger a "Throttle"
+4. If sync invocation: return throttle error 429
+5. If async invocation: retry automatically and go to DLQ
+6. If one function utilized all of concurrent executions, remaining function will face throttle. 
+7. For throttling errors 429 and system errors 5xx, Lambda returns the event to the queue and attempts to run the function again for up to 6 hours.
+8. The retry interval increases exponentially from 1 sec to 5 mins
+9. Cold Start: if init (code outside handler) is too large it can take sometime to process and first request processed by Lambda instance ==> high latency
+10. Provisioned Concurrency: Concurrency is allocated even before function in invoked (in advance) == > cold start never happens.
+
+Lambda External Dependencies
+1. If Lambda function depends on external libraries (SDK, X-Ray, DB Clients..), install the packages alongside your code and zip it together. Upload the zip to Lambda (<50MB) or to S3.
+
+Lambda and CloudFormation 
+1. Inline: Lambda function can be defined in-line of CloudFormation template. Use Code.ZipFile property. You cannont include function dependencies with inline functions.
+2. S3: Uplaod zip in S3 and refer to this in CloudFormation template. S3Bucket, S3Key (full path to zip), S3ObjectVersion
+
+Lambda Layers
+1. To create custom run time environments for Lambda (Ex: C++, Rust)
+2. Externalize Dependencies to reuse them: When the dependencies does not change often, it is better to externalize them away from the actual code into Layers.
+3. Multiple Lambda functions can reference a Layer which has "dependencies" stored
+
+Lambda Versions and Aliases
+1. $LATEST is mutable. Versions are immutable.
+2. Each version gets its own ARN
+3. Version = code + configuration (nothing can be changed - immutable)
+4. Aliases are pointers to Lambda function versions. We can define a "dev", "test", "prod" aliases and point them to different Lambda versions
+5. Aliases are mutable.
+6. Aliases enable Blue/Green deployment by assigning weights to lambda function versions. 
+7. Aliases get their own ARNs. Aliases cannot reference aliases.
+
+Lambda and CodeDeploy
+1. CodeDeploy can help to automate traffic shift for Lambda Aliases.
+2. Feature integrated with SAM framework,
+3. Linear, Canary, AllAtOnce
+
+Lambda Limits: Per Region
+1. Memory allocation: 128 MB to 3009 MB (64 MB increments)
+2. Max execution time: 900 sec
+3. Env variables: 4 KB
+4. Disk capacity in the "function container" (in /tmp): 512 MB
+5. Concurrency executions: 1000 
+6. Lambda function deployment size: compressed .zip = 50 MB, uncompressed deployment (code + dependencies): 250 MB, can use /tmp directory to load other files at startup
+
+Lambda Best practices
+1. Perform heavy duty work outside function handler
+2. Use envrionment variables: DB connection strings, S3 bucket
+3. Minimize deployment package size to its runtime necessities = Breakdown the function if need be.
+
+
+
+
 # AWS Serverless: DynamoDB
 # AWS Serverless: API Gateway
 # AWS Serverless SAM: Serverless Application Model
