@@ -1107,6 +1107,40 @@ DynamoDB CLI
 3. Optimization, Pagination
 
 DynamoDB Transactions
+1. Transaction= ability to create/update/delete multiple rows in a different tables at the same time.
+2. "All or nothing" type of operation.
+3. Write modes: Standard, Transactional
+4. Read modes: Eventual consistency, Strong consistency, Transactional.
+5. Consumes 2x WCU / RCU.
+
+DynamoDB Session state cache
+1. To store session state.
+2. vs Elasticache -- in memory, but DynamoDB is serverless and automatic scaling
+
+DynamoDB Write Types
+1. Concurrent Writes, Conditional Writes, Atomic Writes (Update Item A and value INCREASE BY / DECREASE BY 2), Batch Writes (write/update many items at a time)
+
+DynamoDB Patterns with S3
+1. Large Objects Pattern: Store in S3 and write metadata in DynamoDB
+2. Indexing S3 objects metadata. 
+
+DynamoDB Operations
+1. Table Cleanup: Scan + Delete - very slow and expensive. Consumes RCU and WCU
+2. Table Cleanup: Drop Table + Recreate table ==> fast and cheap.
+3. Copying DynamoDB table: Use AWS DataPipeline  (use EMR) or Backup and restore into new table name
+
+DynamoDB Security
+1. VPC Endpoints to access DynamoDB without internet
+2. Access controlled by IAM
+3. Encryption at rest - KMS
+4. Encryption in transit - SSL/TLS
+5. Backup and restore
+6. Global Tables: Multi region, fully replicated, high performance.- uses DynamoDB Streams
+
+
+
+
+
 
 
 
