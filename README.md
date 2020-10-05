@@ -1137,23 +1137,29 @@ DynamoDB Security
 5. Backup and restore
 6. Global Tables: Multi region, fully replicated, high performance.- uses DynamoDB Streams
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # AWS Serverless: API Gateway
+1. Support for websocket protocol.
+2. Handle API versioning, different environments, Security (Authentication and Authorization)
+3. Cache API responses.
+4. API Gateway Integrations: Lambda function, HTTP endpoints (ALB, on-prem end points)
+5. API Gateway - End Points: Edge-Optimized (default)- global clients - Requests routed through CloudFront edge locations (improves latency). API Gateway still lives in only one region.
+6. API Gateway - End Points: Regional - For clients within same region
+7. API Gateway - End Points: Can only be accessed from VPC using VPC Endpoint (ENI), use resource policy to define access.
+8. Use Lambda Proxy Integration: Requests will be proxied to Lambda with request details available in the 'event' of handler function. Cannot tranform request and response in PROXY mode. 
+9. API Gateway Default timeout - 29 seconds
+
+API Gateway Deployemnt Stages. 
+1. You need to make a "deployment" to a stage for the changes made to API in API Gateway. Else it will not be effective
+2. Each stage has it's own configuration parameter. Stages can be rolled back as a history of deployments is kept.
+3. Stage variables ==> similart to environment variables, but for API Gateway.
+4. Stage vairables Use case: Configure HTTP Endpoints your stages talk to (dev,test,prod), Pass configuration parameters to AWS Lambda through mapping templates
+5. Stage varables are passed to the "context" object in AWS Lambda. 
+
+
+
+
+
+
 # AWS Serverless SAM: Serverless Application Model
 
   
