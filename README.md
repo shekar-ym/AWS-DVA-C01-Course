@@ -1033,10 +1033,92 @@ Lambda Best practices
 2. Use envrionment variables: DB connection strings, S3 bucket
 3. Minimize deployment package size to its runtime necessities = Breakdown the function if need be.
 
-
-
-
 # AWS Serverless: DynamoDB
+1. DynamoDB: Fully managed, serverless, NoSQL
+2. Integration with IAM, Enables event driven programming with DynamoDB Streams
+3. Tables. Primary key must be created at creation time. Items = rows. Each item has attributes. Attributes can be added over time- can be null
+4. Max size of item = 400 KB
+5. Primary Keys: Partition Key only (HASH). Partition Key must be unique for each item and must be diverse so that data is distributed. user_id for a users table.
+6. Primary Keys: Partition Key + Sort Key. Combination must be unique. Data is grouped by partition key. Sort Key = range key. 
+
+WCU and RCU
+1. WCU - Throughput for writes, RCU- throughput for reads. Tble must have provisioned RCU and WCU. Can be set to autoscale.
+2. Throughput can be exceeded using "burst credit". If burst credit is exceeded == Throughput Exception erros ==> Exponential backoffs.
+3. WCU = One write per second for item upto 1 KB in size. If more size, then more WCU is consumed.
+4. Ex: To write 10 items per second of 2KB each = 10 x 2 = 20 WCU.
+5. Ex: To write 6 items per second of 4.5KB each = 6 x 5 = 30 WCU
+6. Ex: To write 120 items per minute of 2KB each: (120 / 60)  x 2 = 4 WCU.
+7. Eventual Consistent Read (default), Strongly consistent reads. But GetItem, Query and Scan provides a "ConsistentRead" parameter you can set to TRUE.
+8. RCU = One Stronly consistent read(of an item) per second or 2 eventual consistent read (of an item) per second for an item upto 4KB in size. More size more RCU consumed.
+9. Ex: 10 Strongly consistent reads per second of each 4 KB each = 10 x 4KB /4 KB= 10 RCUs
+10. Ex: 16 Eventually consisten reads per seconds of 12 KB each = (16/2) x (12KB/4KB) = 24 RCUs
+11. Ex: 10 strongly consistent reads per second of 6 KB each = 10 x (8 KB/4 KB) = 20 RCUs
+12. WCU and RCU are spread evenly between partitions
+13. If exceed RCU or WCU per partition ==> ProvisionedThroughputExceededExceptions = Hot Keys (one parition key is read too many times) , Hot partitions, very large items
+14. Solution: Exponential back-off, Distribute parition keys, if its RCU - use DAX.
+
+DynamoDB APIs
+1. PutItem - Consumes WCU, UpdateItem 
+2. Conditional Writes: accept/update only if conditions are respected, otherwise reject. Helps with concurrent access to Items. 
+3. DeleteItem - delete individual row. Conditional delete.
+4. DeleteTable - delete whole table.
+5. BatchWriteItem: Upto 25 PutItem and or DeleteItem in one call. No UpdateItem. Batching allows to save latency by reducing number of API calls done against DynamoDB. Operations done in parallel. If part of batch fails, retry the fail items using exponental back-off algorithm.
+6. Reading data: GetItem - Read based on Primary key. Eventual consistent by default. ProjectionExpression - to include only certain attributes of an item - helps to save bandwidth.
+7. BatchGetItem: Upto 100 items, items retrieved in parallel.
+8. Query data: returns items based on partition key and sort key. FilterExpression to filter data further (client side filtering). Able to do pagination on results.
+9. Scan : scans the entire table and then filter out data (inefficient). Consumes lot of RCU. For faster performance - use parallel scans.
+
+GSI + LSI
+1. LSI - Alternate range key/sort key for the table. Can have upto 5 LSI per table. LSI must be created at table creation time only. For LSI, partition key will be that of main table. 
+2. GSI - To speed up queries on non-key attributes. GSI = non main partition key + optional sort key.
+3. GSI - index is kind of a new "table" which has projected attributes from main table. Partition key + sort key of main table are always projects KEYS_ONLY, along with ALL (all attributes from main table) or INCLUDE (specific attributes from main table)
+4. Possibility to add/modify GSI
+5. DynamoDB Indexes and Throttling: GSI - if writes are throttled on GSI, then main table will be throttled. Choos GSI carefully and assign GSI's WCU carefully.
+6. DynamoDB Indexes and Throttling: LSI - LSI uses WCU and RCU of main table. 
+
+DynamoDB Concurrency
+1. DynamoDB has "Conditional Update/Delete" which makes it optimistic locking/concurrency DB
+
+DAX
+1. Seamless cache for DynamoDB, no application re-write.
+2. Writes go through DAX to DynamoDB. Solves hot key problem (too many reads)
+3. 5 minutes TTL for cache by default. 
+4. Upto 10 nodes in the cluster. MultiAZ
+5. Secure - Encryption at rest with KMS, can be deployed in VPC, IAM, CloudTrial)
+6. Individual objects cache, Query or Scan cache - DAX, Store aggregation results - ElastiCache
+
+DynamoDB Streams
+1. Create, Update, Delete in DynamoDB tables == can end up in DynamoDB streams
+2. DynamoDB Streams can be read by Lambda and EC2 instances.
+3. Only have 24 hours retention.
+4. Chose what needs to go DynamoDB streams. KEYS_ONLY (only key attributes of modified item), NEW_IMAGE (entire item which was modified), OLD_IMAGE (entire item before it was modified), NEW_AND_OLD_IMAGES (both new and old images of the item).
+5. Records are not retroactively populated in a stream after enabling it.
+6. DynamoDB + Lambda : Define a Event source mapping to read from DynamoDB streams. Lambda function is invoked synchronously. 
+7. DynamoDB Streams can help recover accidentally deleted items. 
+
+DynamoDB TTL
+1. TTL = automatically delete an item after expiry date/time. Deletion doesnt use any WCU/RCU
+2. TTL is enabled per row/item. expire_on attribute used for TTL.
+3. DynamoDB deletes an expired items within 48 hours of expiration.
+
+DynamoDB CLI
+1. --projection-expression: attributes to retrieve 
+2. --filter-expression: filter results.
+3. Optimization, Pagination
+
+DynamoDB Transactions
+
+
+
+
+
+
+
+
+
+
+
+
 # AWS Serverless: API Gateway
 # AWS Serverless SAM: Serverless Application Model
 
