@@ -1151,16 +1151,87 @@ DynamoDB Security
 API Gateway Deployemnt Stages. 
 1. You need to make a "deployment" to a stage for the changes made to API in API Gateway. Else it will not be effective
 2. Each stage has it's own configuration parameter. Stages can be rolled back as a history of deployments is kept.
-3. Stage variables ==> similart to environment variables, but for API Gateway.
+3. Stage variables ==> similar to environment variables, but for API Gateway stages.
 4. Stage vairables Use case: Configure HTTP Endpoints your stages talk to (dev,test,prod), Pass configuration parameters to AWS Lambda through mapping templates
 5. Stage varables are passed to the "context" object in AWS Lambda. 
+6. Ex: We create a stage variable to indicate the corresponding Lambda Alias, ==> API Gatewaywill invoke the corresponding Lambda function.
+7. ${stageVariables.lambdaAlias}. Also a resource based policy needs to be added (from CLI) to each Lambda Alias so that they can be invoked from API Gateway stage.
+8. API Gateway Stage Configuration: Cache can be defined for each stage, Throttling, WAF, CloudWatch logging, X-Ray tracing at each stage level.
 
+API Gateway Canary deployment
+1. Can enable Canary deployments for any stage, choose % of the traffic the Canary channel receives. "Promote Canary"
+2. This is blue/green deployment with AWS Lambda and API Gateway. 
 
+API Gateway Integration types
+1. MOCK - API Gateway returns response without sending request to backend
+2. HTTP / AWS (Lambda and AWS services) - You must configure both integration request and integration response. Setup data mapping using "mapping templates" for request and response.
+3. AWS_PROXY (Lambda Proxy) : incoming request from client is input to Lambda without any changes. Lambda function is responsible for request/response.
+4. AWS_PROXY (Lambda Proxy): No mapping templates, headers, query string parameters are passed as arguments
+5. HTTP_PROXY: No mapping template, HTTP request passed to backend, HTTP response is forwarded by API Gateway to client.
+6. Mapping Templates: used to modfiy request/response, modify query string parameters, modify body content, add headers, Filter output results.
+7. Mapping Template: JSON to XML using SOAP. SOAP - XML based, REST - JSON based. Mapping template can perform the required transformation both ways
+8. Mapping Template: Query String parameters.
 
+API Gateway Swagger / OpenAPI spec
+1. Import Swagger / OpenAPI 3.0 spec to API Gateway.
+2. Export API in API Gateway as Swagger / OpenAPI spec.
 
+API Gateway Caching
+1. Caching reduces the number of API calls made to backend.
+2. Default TTL: 300 sec. Max: 1 hours. 
+3. Caches are defined per stage.
+4. Cache 0.5 GB to 237 GB. Option to encrypt the cache.
+5. Flush the cache/ invalidate it immediately or Clients can send header Cache-Control:max-age=0 (with proper IAM authorization)
+6. Cache settings at stage level can be overridden at each method level. 
 
+API Gateway Usage Plans and API Keys
+1. Usage plan : if you want to make an API available as an offering
+2. Usage Plan: who can access one or more API stages/methods, how much and how fast, use API keys to identify the clients and meter access, configure throttling and quota limits.
+3. API Keys: can be used with usage plans to control access, Throttling limits are applied to the API keys.
+4. Configure Usage plan: Create an API, configure the methods that require an API key and deploy the APIs to stages, Generate or import API Keys to distribute to users, Create a usage plan with desired throttle and quota limits, Associate API stages and AP Keys with the usage plan.
+5. Callers of API must provide assigned API key is x-api-key header.
+
+API Gateway Monitoring, Logging, Tracing
+1. CloudWatch logs: Can enable at stage level
+2. X-Ray: X-Ray, API Gateway  and Lambda gives a full picture of request/response.
+3. CloudWatch Metrics: Metrics are by stage, detailed metrics possible. CacheHitCount, CacheMissCount, 
+4. IntegrationLatency: time between when API Gateway relays a request to backend and when receives a response from backend
+5. Latency: The time between when API Gateway receives a request from a client and when it returns a response to the client. The Latency includes IntegrationLatency and other API Gateway overhead. Latency > IntegrationLatency.
+6. API Gateway max timeout 29 secs.
+7. 4xx and 5xx errors
+8. API Gateway Throttling: API Gateway throttles requests at 10000 rps across all AP, this is soft limit and can be increased on request.
+9. Error 429 (client side)===> Throttling, too many requests. Retriable error. Use exponential backoff
+10. Can set Stage and Method limits to imrove performance.
+11. Or define Usage plans to throttle per customer.
+12. Like Lambda concurrency, one API that is overloaded, if not limited, can cause the other APIs to be throttled.
+13. 4xx Errors: 400 Bad request, 403 Access denied,WAF filtered, 429 Quota Exceeded, Throtttle
+14. 5xx Errors: 502 Bad Gateway, 503 Service Unavailable, 504 Integration failure - API Gateway  timeout (29 secs).
+
+API Gateway - CORS
+1. CORS can be enabled at API Gateway
+2. OPTIONS pre-flight request must contain Access-Control-Allow-Methods, Access-Control-Allow-Headers, Access-Control-Allow-Origin.
+3. CORS wont work if back-end integration involves a PROXY like LAMBDA_PROXY
+
+API Gateway Authentication and Authorization
+1. IAM Permissions: Authentication = IAM, Authorization = IAM Policy } ==> if accessing API Gateway within AWS
+2. Leverages Sig V4 capability where IAM credential are in headers.
+3. API Gateway Resource Policies: Similar to Lambda resource policies ==> defines who can access API Gateway. 
+4. API Gateway Resource Policies: Allow for Cross Account Access (combined with IAM Security), Specific IP address, VPC Endpoint
+5. Cognito User Pools: Authentication: Cognito User Pools Authorization: API Gateway Method.
+6. Lambda Authorizer (Custom Authorizer): Authorization only. Authentication: External. 
+7. Lambda Authorizer (Custom Authorizer): Token based authorizer (bearer token) JWT/OAuth. Lambda must return an IAM policy for the user, result policy is cached (policy cache)
+
+API Gateway - REST API v HTTP API v WebSocket API
+1. HTTP API: low latency, low cost AWS Lambda Proxy, HTTP Proxy APIs (no data mappings), no usage plans/API keys
+2. REST API: All Features
+3. WebSocket API: Two-way communication between a user browser and server, for stateful application use cases.
+4. WebSocket API: for real-time applications such as chat, colloboration platforms, multiplayer games and financial trading platforms.
 
 # AWS Serverless SAM: Serverless Application Model
+1. Framework for developing and deploying serverless applications.
+2. YAML Code / CloudFormation.
+3. SAM can use CodeDeploy to deploy Lambda functions
+4. 
 
   
 # AWS Other Services
