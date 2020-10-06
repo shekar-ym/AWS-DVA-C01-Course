@@ -1236,6 +1236,55 @@ API Gateway - REST API v HTTP API v WebSocket API
 6. 3 helpers for resources : AWS::Serverless::Function , AWS::Serverless::API, AWS::Serverless::SimpleTable - Lambda, API Gateway, DynamoDB.
 7. aws cloudformation package / sam package, aws cloudformation deploy / sam deploy
 
+# Cognito User Pools, Cognito Identity Pools, Cognito Sync
+1. CUP: Sign in functionality, Integration with API Gateway and ALB
+2. CIP (Federated Identity: Provide AWS credentials to users so they can access AWS resources directly, integration with CUP as identify provider.
+3. Cognito Sync: Synchronize data from mobile devices to Cognito. Now replaced by AppSync
+4. IAM is for users within AWS.
+
+CUP
+1. Create a serverlesss DB of users for web and mobile apps
+2. Password reset
+3. Email and Phone number verification. MFA
+4. Federated Identities:  users from FB, Google, SAML
+5. Feature to block users if their credentials are compromised.
+6. Login sends back a JWT - JSON Web token.
+7. Integrations: API Gateway, ALB
+8. Hosted UI: provides an OAuth 2.0 authorization server with build in web pages that can be used to sign up and sign in users using the domain you created.
+9. Hoste UI page can be customized with your logo and sign in page.
+10. CUP Triggers: Option to configure Lambda functions as Triggers with different events like Pre sign-up, Pre-authentication, Post confirmation, Post authentication...
+11. CUP Triggers: invokes Lambda functions synchronously. 
+12. Hosted Authentication UI: can add to your app to handle sign-up and sign-in workflows. Can customize with a custom logo and custom CSS.
+
+CIP (Federated Identities)
+1. Get identities for "users" so they obtain temporary AWS credentials.
+2. Identity pool or identify source can be Public providers (FB, Amazon, Google, Apple), Users in a CUP, OpenID connect providers and SAML identity providers.
+3. CIP allow for unauthenticated (guest) accecss
+4. Once the users get the temporary AWS credentials, they can access AWS services directly or through API Gateway.
+5. IAM policies are applied to credentials that user gets, are defined in CIP.
+6. Users --> Login and Get Token --> from CUP (or Federated IdP) --> Exchange the token with CIP (which validates this token with CUP/Federated IdP) for temporary AWS credentials, to access AWS resources.
+7. CIP decides which IAM role to decides which role to apply for which user. Defaut IAM roles for authenticated and guest users
+8. Define rules to choose the role for each user based on user's ID. 
+9. You can partition your user's access using "policy variables" "${cognito-identity.amazonaws.com:sub}/*"
+10. IAM credentials are obtained by CIP using STS
+11. The role must have a "trust" policy of CIPs
+12. Separate roles are created for authentcated users and guest/unauthenticated users. These roles can be customized to define the permissions.
+
+CIP Push Sychronization
+1. When records change in a dataset, Cognito can notify devices of that change using SNS notification. 
+
+CUP - manage user/password
+CIP - access AWS services
+
+Cognito Sync
+1. Deprecated. Use AWS AppSync
+2. To store preferences, configuration, state of app. 
+3. Cross device synchronization (any platform - iOS, Android)
+4. Offline capability (sync when back online)
+5. Push Sync: silently notify across all devices when identity data changes
+
+
+
 
   
 # AWS Other Services
