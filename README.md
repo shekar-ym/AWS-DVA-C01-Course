@@ -1231,7 +1231,11 @@ API Gateway - REST API v HTTP API v WebSocket API
 1. Framework for developing and deploying serverless applications.
 2. YAML Code / CloudFormation.
 3. SAM can use CodeDeploy to deploy Lambda functions
-4. 
+4. SAM can help to run Lambda, API Gateway and DynamoDB locally. 
+5. Transform Header indicates it's SAM template.
+6. 3 helpers for resources : AWS::Serverless::Function , AWS::Serverless::API, AWS::Serverless::SimpleTable - Lambda, API Gateway, DynamoDB.
+7. aws cloudformation package / sam package, aws cloudformation deploy / sam deploy
+
 
   
 # AWS Other Services
