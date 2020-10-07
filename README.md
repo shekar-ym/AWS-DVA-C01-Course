@@ -1284,6 +1284,79 @@ Cognito Sync
 5. Push Sync: silently notify across all devices when identity data changes
 
 
+# Other Serverless: Step Functions and AppSync
+# Advanced Identity
+
+# AWS Security and Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM and STS
+1. KMS integrates with IAM for authorization. 
+2. KMS CMK Types: Symmetric (AES-256 Keys) - same key used for Encrypt and Decrypt. Necessary for envelope encrytion.
+3. KMS CMK Types: Assymmetric (RSA and ECC key pairs): Public (Encrypt) and Private key (Decrypt) pair. Encryption outside of AWS by users who cant call the KMS API
+4. AWS Kms: Fully managed (create,disable,enable,rotation policies), Audit key usage (using CloudTrial) 
+5. 3 types of CMKs - AWS Managed default CMK (free), User keys created in KMS, User keys imported (256 bit symmetric key)
+6. KMS can only help in encrypting upto 4 KB of data per call. if data > 4 KB use envelope encryption.
+7. To give access to KMS: Key Policy allows the user, Make sure IAM policies allows the API calls.
+8. KMS keys are bound to a region
+9. Key Policies: No key policy = no one can access the key. 
+10. Default Key Policy:created if no other policy is specified, complete access to the key to the root user ==> which means any user who enrolls in this account will have access to the key.
+11. Custom Key policy: Define users and roles that can access the KMS Key, define who can administer the key, Usefull for cross-account access of KMS key.
+12. Copying snapshots across accounts: Create a snapshot encrypted with your own CMK, Attach a KMS Key policy to authorize cross account acccess, Share the encypted snapshot, in target account, create a copy of the snapshot, encrypt it with a KMS key in that account, create a volume from this snapshot.
+
+KMS Encryption patterns and Envelope encryption
+1. Encrypt API, Decrypt API
+2. if data > 4 KB, we need to use Envelope encryption. The main API that will help us is GenerateDataKey API
+3. SO, anything over 4 KB of data that needs to be encrypted must use the Envelope Encryption == GenarateDataKey API
+4. Client --> GenerateDataKey API to KMS --checks IAM permissions and Generates a data key  --> sends plaintext data key AND encrypdated data key (enrypted using CMK) back to client --> client uses this plaintext data key to encrypt the data -->  which gives you an Encypted file.  Encrypted file + encrypted data key are stored to gether as Envelop.
+5. Decryption: Call the Decrypt API to KMS -- KMS checks IAM persmissions --> KMS decrypts the plain text data key and sends the plain text data key back --> whch will be used to decrypt the file.
+6. To simplify this- Encryption SDK. which does Encryption Envelope for us. 
+7. Encryption SDK: Feature: Data Key caching: reuse the data key instead of creating new ones for each encryption, helps reducing calls to KMS.
+8. GenerateDataKeyWithoutPlainText: generate a DEK to use at some point (not immidiately). To encryption right now - GenerateDataKey
+
+KMS Request Quotas
+1. When you exceed a request quota == Throttling Exception. (Service: AWSKMS, Status Code: 400, Error Code: ThrottlingException;....)
+2. Use exponential backoff (backoff and retry)
+3. For cryptographic operations, they share a quota across account for each region.
+4. For GenerateDataKey, consider using DEK caching from the Encryption SDK
+5. Or You can request a Request Quotas increase through API or AWS Support.
+
+KMS with Lambda
+1. Environment variables - can be encrypted using KMS
+
+S3 Security Advanced 
+1. SSE-KMS: Headers: "x-amz-server-side-encryption":"aws:kms" (must set)
+2. SSE-KMS: uses GenarateDataKey and Decrypt KMS API calls
+3. SSE-KMS: Need a KMS policy that authorizes the user/role, an IAM policy that authorizes access to KMS
+4. SSE-KMS : if you get Throttling issue, then it is service throttling with KMS, not S3
+5. S3 Bucket Policies - Force SSL:  aws:SecureTransport = false ===> DENY 
+
+SSM Parameter Store
+1. Secure storage of configuration and secrets.
+2. Seamless encryption using KMS
+3. Serverless, scalable, durable, easy SDK
+4. Version tracking of configurations and secrets. 
+5. Notifications with CloudWatch Events, Integration with CloudFormation
+6. GetParameters or GetParametersByPath (remember heirarchy) APIs
+7. Standard Tier (Free, max size of parameter value = 4 KB), Advanced Tier (Free, max size of parameter value = 4 KB)
+
+Secrets Manager
+1. Newer service, to store secrets
+2. Capability to force rotation of secrets every X days
+3. Automate generation of secrets on rotation (uses Lambda)
+4. Integration with RDS, RedShift amd DocumentDB
+5. Secrets are encrypted using KMS - mandatory.
+6. Mostly meant for RDS integration. 
+
+CloudWatch Logs Encryption
+1. Uses KMS Keys
+2. Encrption is enabled at log group level.  This can be done while creating log group or after it exists
+3. You cannot associate a CMK with a log group using CloudWatch console. CloudWatch Logs API should be used.
+4. associate-kms-key: if the log group already exists.
+5. create-log-group: if the log group doesn't exist yet
+
+CodeBuild security.
+1. To access resources in VPC - specify VPC configuration for CodeBuild.
+2. Secrets in CodeBuild: Use Environment variables that can reference parameter store parameters or secrets in secret manager
+
+
 
 
   
