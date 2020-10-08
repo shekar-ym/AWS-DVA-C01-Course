@@ -1302,7 +1302,26 @@ AWS AppSync
 3. For mobile apps: local data access & data synchronization
 
 # Advanced Identity
-1. 
+1. STS: allows you to get temp credentials to access AWS services upto 1 hour
+2. AssumeRole: within your account or cross account
+3. AssumeRoleWithSAML: returns credentails for users logged with SAML
+4. AssumeRoleWithWebIdentity: return creds for users logged in with an IdP (FB, Google, OIDC compatible..) - not used any more -- use Cognito Identity Pools.
+5. GetSessionToken: for MFA, from a user or root user
+6. GetFederationToken: obtain temperory creds for a federated users
+7. GetCallerIdentity: return details about the IAM user or role used in the API call
+8. DecodeAuthorizationMessage: decode error message when an AWS API is denied. 
+9. AssumeRole: Define an IAM Role with account or cross-account, Define which principals can access this IAM Role, Use STS to get credentials and impersonate the IAM Role.
+10. STS with MFA: Use GetSessionToken from STS, In IAM Policy use IAM Conditions: aws:MultiFactorAuthPresent:true.
+11. GetSessionToken gives: Access ID, Secret Key, Session Token, Expiration date.
+
+Advanced IAM
+1. Explicit Deny is evaluated on priority than explicit allow.
+2. Union of IAM Policies and S3 bucket policies will be evaluated when evaluating if an IAM Principal can perform an operation X.
+3. Dynamic Policies with IAM: Use policy variable ${aws:username}
+4. Customer managed policies: version controlled + rollback, central change management.
+5. Inline Policies: Strict one-to-one relationship between policy and principal. Delete IAM princial deletes Inline policy too.
+
+
 
 
 # AWS Security and Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM and STS
@@ -1374,10 +1393,6 @@ CodeBuild security.
 1. To access resources in VPC - specify VPC configuration for CodeBuild.
 2. Secrets in CodeBuild: Use Environment variables that can reference parameter store parameters or secrets in secret manager
 
-
-
-
-  
 # AWS Other Services
   AWS SES - Simple Email services
   1. To send and receive emails.
