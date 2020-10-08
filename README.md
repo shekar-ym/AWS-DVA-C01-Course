@@ -1320,9 +1320,18 @@ Advanced IAM
 3. Dynamic Policies with IAM: Use policy variable ${aws:username}
 4. Customer managed policies: version controlled + rollback, central change management.
 5. Inline Policies: Strict one-to-one relationship between policy and principal. Delete IAM princial deletes Inline policy too.
+6. Maximum policy size : 2048 bytes
+7. PassRole: To configure many AWS services, you must pass an IAM role to the service (this happens only during once during setup). The service will later assume the role and perform actions
+8. Ex: passing a role to EC2 instance, Lambda function, ECS tass. iam:PassRole.
+9. It often comes with iam:GetRole to view the role being passed.
+10. Can a role be passed to any service? NO. Roles can only be passed to what their trust allows.
 
-
-
+Directory Services
+1. MS Active Directory: a database of objects- users, accounts, computers, printers, file shares, security groups
+2. Objects are organized in trees and a group of trees is a forest.
+3. AWS Directory Services: AWS Managed MS AD - create your own AD in AWS, manage users locally, supports MFA. Establish a "trust" connections with on-prem AD, users are shared between on-prem AD and AWS managed AD.
+4. AD Connector: Directory Gateway (proxy) to redirect to on-premise AD, Users are managed on-prem AD
+5. Simple AD: AD-Compatible managed directory on AWS. Cannot be joined with on-prem AD.
 
 # AWS Security and Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM and STS
 1. KMS integrates with IAM for authorization. 
