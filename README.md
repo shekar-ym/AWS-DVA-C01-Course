@@ -1283,9 +1283,27 @@ Cognito Sync
 4. Offline capability (sync when back online)
 5. Push Sync: silently notify across all devices when identity data changes
 
-
 # Other Serverless: Step Functions and AppSync
+1. Step Functions: to build a serverless workflow to orchestrate Lambda functions.
+2. Represent flow as a JSON state machine.
+3. Max exectution time: 1 year
+4. Manual approvals.
+5. Order fulfillment, Data processing, Web applications
+6. Visual workflow.
+7. By default, when a state reports any error, AWS Step Functions causes the execution to fail entirey
+8. Retrying failures - Retry:IntervalSeconds, MaxAttempts, BackoffRate
+9. Standard Workflows (max duration 1 year), Express Workflows (max duration: 5 mins)
+10. Check AWS Step Functions use cases page.
+11. IAM Roles, CloudWatch logging, X-Ray integration 
+
+AWS AppSync
+1. AppSync is a managed service that uses GraphQL
+2. Retrieve data in real-time with Websocket or MQTT on WebSocket. 
+3. For mobile apps: local data access & data synchronization
+
 # Advanced Identity
+1. 
+
 
 # AWS Security and Encryption: KMS, Encryption SDK, SSM Parameter Store, IAM and STS
 1. KMS integrates with IAM for authorization. 
